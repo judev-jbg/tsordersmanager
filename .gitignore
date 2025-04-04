@@ -41,3 +41,7 @@ lerna-debug.log*
 # Configuraciones de sistemas
 .DS_Store
 Thumbs.db
+
+*.json
+
+src/assets/img/products/*

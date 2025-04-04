@@ -1,7 +1,8 @@
 import { useState } from "react";
+import getBackgroundTagRadius from "../services/ConfigTagRadius";
 
 // eslint-disable-next-line react/prop-types
-const TagRadius = ({ statusOrder, tooltipText }) => {
+const TagRadius = ({ label, tooltipText }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -10,10 +11,10 @@ const TagRadius = ({ statusOrder, tooltipText }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{
-        background: "#28a745",
+        background: getBackgroundTagRadius(label),
       }}
     >
-      {statusOrder}
+      {label}
       {isHovered && <div className="tooltip">{tooltipText}</div>}
     </div>
   );

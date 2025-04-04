@@ -17,7 +17,7 @@ const Switch = ({ label, checked, onChange, id, action }) => {
         className="switch-checkbox"
         type="checkbox"
         id={id}
-        checked={isChecked}
+        checked={isChecked || 0}
         onChange={handleSwitchChange}
       />
       <div className="switch"></div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useSplitText from "../hooks/useSplitText";
-import useCopyToClipboard from "../hooks/useCopyToClipboard"; // Importa el hook
-import { FaClipboard } from "react-icons/fa"; // Asegúrate de tener react-icons instalado
+import useCopyToClipboard from "../hooks/useCopyToClipboard";
+import { FaClipboard } from "react-icons/fa";
 // eslint-disable-next-line react/prop-types
 const Label = ({ text, tooltipText, positionTooltip, needSplit }) => {
   const [isHovered, setIsHovered] = useState(false);
