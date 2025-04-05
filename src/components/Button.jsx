@@ -1,5 +1,14 @@
+import { useNavigate } from "react-router-dom";
 const Button = () => {
-  return <button className="button">Preparar envíos</button>;
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate("/orders-to-ship");
+  };
+  return (
+    <button className="button" onClick={handleClick}>
+      Preparar envíos
+    </button>
+  );
 };
 
 export default Button;
