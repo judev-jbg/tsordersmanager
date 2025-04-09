@@ -12,33 +12,59 @@
 }
 
 h1 {
+  font-size: 1.5rem;
+  color: var(--background-row-table-hover);
   margin-bottom: 20px;
-  color: #333;
 }
 
 .actions-top {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   margin-bottom: 15px;
 }
 
-.process-button {
-  background-color: #4caf50;
-  color: white;
+.process-button,
+.back-button {
+  font-family: var(--font-family);
+  font-size: 16px;
+  background-color: var(--acent-color);
+  color: var(--color-button);
   border: none;
+  outline: none;
   padding: 10px 20px;
-  border-radius: 4px;
+  border-radius: 2px;
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.3s;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+}
+
+.back-button {
+  background-color: transparent;
+  color: var(--acent-color);
+  border: 1px solid var(--acent-color);
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+}
+
+.back-button:hover {
+  background-color: var(--acent-color);
+  color: var(--color-button);
 }
 
 .process-button:hover {
-  background-color: #45a049;
+  background-color: var(--acent-color-hover);
 }
 
 .process-button:disabled {
-  background-color: #cccccc;
+  background-color: var(--secondary-color);
+  color: #666;
   cursor: not-allowed;
 }
 
@@ -66,8 +92,8 @@ h1 {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #4caf50;
-  color: white;
+  background-color: var(--acent-color);
+  color: var(--color-button);
   border: none;
   font-size: 24px;
   cursor: pointer;
@@ -80,34 +106,48 @@ h1 {
 }
 
 .fab-button:hover {
-  background-color: #45a049;
+  background-color: var(--acent-color-hover);
   transform: scale(1.05);
 }
 
 .fab-button:disabled {
-  background-color: #cccccc;
+  background-color: var(--secondary-color);
+  color: #666;
   cursor: not-allowed;
 }
 
 /* OrdersTable.css */
+
 .table-container {
   width: 100%;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 80px; /* Espacio para el FAB */
+  /*EspacioparaelFAB*/
+  margin-bottom: 80px;
 }
 
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
+  box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%);
+  -webkit-box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%);
+  -moz-box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%);
+  -ms-box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%);
+  -o-box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%);
   max-height: calc(100vh - 250px); /* Altura máxima para permitir scroll */
 }
 
 .orders-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
   white-space: nowrap;
+  border-radius: 0 0 10px 10px;
+  background: var(--secondary-color);
+  -webkit-border-radius: 0 0 10px 10px;
+  -moz-border-radius: 0 0 10px 10px;
+  -ms-border-radius: 0 0 10px 10px;
+  -o-border-radius: 0 0 10px 10px;
 }
 
 .orders-table thead {
@@ -117,25 +157,23 @@ h1 {
 }
 
 .orders-table th {
-  background-color: #f2f2f2;
+  background-color: var(--background-header-table);
   padding: 12px 15px;
   text-align: left;
-  border-bottom: 2px solid #ddd;
   font-weight: 600;
 }
 
 .orders-table td {
   padding: 10px 15px;
-  border-bottom: 1px solid #ddd;
   transition: background-color 0.2s;
 }
 
 .orders-table tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: var(--background-row-table);
 }
 
 .orders-table tr:hover {
-  background-color: #f1f1f1;
+  background-color: var(--background-row-table-hover);
 }
 
 /* Estilo para celdas editables */
@@ -145,17 +183,44 @@ h1 {
 }
 
 .editable-cell:hover {
-  background-color: #fffde7;
+  background-color: var(--secondary-color);
 }
 
-.editable-cell::after {
+.editable-cell::before {
   content: "✎";
   position: absolute;
-  right: 5px;
+  left: 5px;
   top: 50%;
   transform: translateY(-50%);
-  opacity: 0.3;
+  opacity: 0.2;
   font-size: 12px;
+}
+
+.editable-cell:hover::before {
+  opacity: 0.8;
+}
+
+.cell-data {
+  padding-left: 0.8rem;
+}
+
+/* Estilo para el input en edición */
+.editable-cell input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--acent-color);
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+}
+
+/* Estilo para celdas inválidas */
+.invalid-cell {
+  color: var(--danger-color);
+}
+
+.invalid-cell:hover {
+  color: var(--danger-color-dark);
 }
 
 /* Estilo para el input en edición */
@@ -176,4 +241,52 @@ h1 {
 .invalid-input {
   border-color: #f44336 !important;
   color: #f44336;
+}
+
+/* .orders-table span {
+  display: block;
+} */
+.servicio {
+  width: 5.795rem;
+}
+.horario {
+  width: 5.375rem;
+}
+.destinatario {
+  width: 10rem;
+}
+.direccion {
+  width: 25rem;
+}
+.pais {
+  width: 3.875rem;
+}
+.cp {
+  width: 6rem;
+}
+.poblacion {
+  width: 10rem;
+}
+.telefono,
+.movil {
+  width: 10rem;
+}
+.email {
+  width: 12.9375rem;
+}
+
+.departamento {
+  width: 13.5rem;
+}
+
+.contacto {
+  width: 18.75rem;
+}
+
+.observaciones {
+  width: 12.9375rem;
+}
+
+.refc {
+  width: 10rem;
 }

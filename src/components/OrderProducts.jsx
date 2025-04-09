@@ -1,6 +1,6 @@
 import React from "react";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
-import imgProductDefault from "../assets/img/not-available.png";
+import ProductImage from "./ProductImage";
 
 const OrderProducts = ({ order }) => {
   const copyToClipboard = useCopyToClipboard();
@@ -77,13 +77,9 @@ const OrderProducts = ({ order }) => {
                     height: "70px",
                   }}
                 >
-                  <img
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                    data-nimg="1"
-                    src={imgProductDefault}
-                    style={{ width: "100%", height: "100%" }}
+                  <ProductImage
+                    referenciaProv={item.referenciaProv}
+                    productName={item.productName}
                   />
                 </span>
               </td>
@@ -136,20 +132,20 @@ const OrderProducts = ({ order }) => {
               </td>
               <td className="text-center">{cantidadComprada}</td>
               <td className="text-center">{precioUnidadSinIVA} €</td>
-              <td className="text-center">{precioUnidadConIVA} €</td>
+              <td className="text-center">{precioUnidadConIVA.toFixed(2)} €</td>
               <td className="text-center border-l">
                 <div className="flex justify-center items-center">
                   <div className="text-end me-1">
                     <div style={{ fontWeight: 600, marginRight: ".1rem" }}>
-                      Sub total:{" "}
+                      Sub total:
                     </div>
                     {envio > 0 && (
                       <>
                         <div style={{ fontWeight: 600, marginRight: ".1rem" }}>
-                          Envio:{" "}
+                          Envio:
                         </div>
                         <div style={{ fontWeight: 600, marginRight: ".1rem" }}>
-                          Total:{" "}
+                          Total:
                         </div>
                       </>
                     )}

@@ -15,8 +15,7 @@ const useFormatDate = (date) => {
   // Formatear la fecha
   let fechaFormateada = formateador.format(fecha);
 
-  // Reemplazar "de mar de" por "de mar."
-  return fechaFormateada.replace(/de mar de/, "de mar.");
+  return fechaFormateada.replace(/de (\w+) de/, "de $1.");
 };
 
 export default useFormatDate;

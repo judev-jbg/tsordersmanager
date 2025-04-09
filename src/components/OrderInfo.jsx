@@ -141,6 +141,14 @@ const OrderInfo = ({ order }) => {
             needSplit={false}
           />
         )}
+        {order.billPostalCode && (
+          <Label
+            text={order.billPostalCode}
+            tooltipText="Provincia"
+            positionTooltip="left"
+            needSplit={false}
+          />
+        )}
         {order.billCountry && (
           <Label
             text={getCountryName(order.billCountry)}

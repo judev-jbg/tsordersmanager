@@ -45,7 +45,24 @@
   border: none;
   outline: none;
   background-color: var(--acent-color);
-  color: #000;
+  color: var(--color-button);
+  padding: 0.5rem 1rem;
+  font-family: var(--font-family);
+  font-size: 16px;
+  margin: 0 1rem;
+  border-radius: 2px;
+  cursor: pointer;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+}
+
+.button-line {
+  outline: none;
+  border: 1px solid var(--acent-color);
+  background: transparent;
+  color: var(--acent-color);
   padding: 0.5rem 1rem;
   font-family: var(--font-family);
   font-size: 16px;
@@ -59,6 +76,26 @@
 
 .button:hover {
   background-color: var(--acent-color-hover);
+}
+
+.button-line:hover {
+  background-color: var(--acent-color);
+  color: var(--color-button);
+}
+
+.button-export {
+  outline: none;
+  background: var(--acent-color);
+  color: var(--color-button);
+  margin: 0;
+  padding: 0.4rem 0.8rem;
+}
+
+.button-export.button-disabled {
+  border: none;
+  background-color: var(--acent-color-disabled);
+  color: var(--secondary-color);
+  cursor: not-allowed;
 }
 
 .search-bar {
@@ -543,19 +580,31 @@ th {
   border-bottom: 1px solid var(--border-color);
 }
 
+tr td:first-child {
+  border-left: 1px solid var(--border-color);
+}
+
+tr td:last-child {
+  border-right: 1px solid var(--border-color);
+}
+
 tr:first-child th:first-child {
+  border-left: 1px solid var(--border-color);
   border-top-left-radius: 10px;
 }
 
 tr:first-child th:last-child {
+  border-right: 1px solid var(--border-color);
   border-top-right-radius: 10px;
 }
 
 tr:last-child td:last-child {
+  border-right: 1px solid var(--border-color);
   border-bottom-right-radius: 10px;
 }
 
 tr:last-child td:first-child {
+  border-left: 1px solid var(--border-color);
   border-bottom-left-radius: 10px;
 }
 
@@ -793,6 +842,41 @@ td {
   font-size: 14px;
   color: #333;
   line-height: 1.4;
+}
+
+.up-button {
+  visibility: hidden;
+  opacity: 0;
+  box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.4) !important;
+  transition: 0.2s ease-in-out;
+  transform: scale(0.8);
+  -webkit-transform: scale(0.8);
+  -moz-transform: scale(0.8);
+  -ms-transform: scale(0.8);
+  -o-transform: scale(0.8);
+  -webkit-box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.4) !important;
+  -moz-box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.4) !important;
+  -ms-box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.4) !important;
+  -o-box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.4) !important;
+  -webkit-transition: 0.2s ease-in-out;
+  -moz-transition: 0.2s ease-in-out;
+  -ms-transition: 0.2s ease-in-out;
+  -o-transition: 0.2s ease-in-out;
+}
+
+.up-button.show {
+  visibility: visible;
+  transition: 0.3s ease-in-out;
+  transform: scale(0.9);
+  opacity: 1;
+  -webkit-transition: 0.3s ease-in-out;
+  -moz-transition: 0.3s ease-in-out;
+  -ms-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
+  -webkit-transform: scale(0.9);
+  -moz-transform: scale(0.9);
+  -ms-transform: scale(0.9);
+  -o-transform: scale(0.9);
 }
 
 @keyframes slideIn {

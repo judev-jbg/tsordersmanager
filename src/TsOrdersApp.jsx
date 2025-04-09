@@ -73,6 +73,7 @@ const TsOrdersApp = () => {
   const [switchStates, setSwitchStates] = useState({});
   const [itemsFilter, setItemsFilter] = useState(ordersFilter);
   const [orders, setOrders] = useState([]);
+  const [showUpButton, setShowUpButton] = useState("");
   const [activeResource, setActiveResource] = useState("orderspending");
   const [isLoading, setIsLoading] = useState(true);
   const [addressToFormat, setAddressToFormat] = useState(null);
@@ -322,16 +323,14 @@ const TsOrdersApp = () => {
         pais: countryName || targetOrder.shipCountry,
         cp: targetOrder.shipPostalCode || "",
         poblacion: targetOrder.shipCity || "",
-        telefono:
-          targetOrder.purchaseOrderNumber || targetOrder.buyerPhoneNumber || "",
+        telefono: targetOrder.buyerPhoneNumber || "",
         email: "orders@toolstock.info",
         departamento: targetOrder.amazonOrderId || "",
         contacto: targetOrder.recipientName || "",
         observaciones: targetOrder.deliveryInstructions || "",
         bultos: 1,
-        movil:
-          targetOrder.purchaseOrderNumber || targetOrder.buyerPhoneNumber || "",
-        refC: targetOrder.deliveryInstructions || "",
+        movil: targetOrder.buyerPhoneNumber || "",
+        refC: targetOrder.purchaseOrderNumber || "",
         idOrder: targetOrder.amazonOrderId || "",
         process: "isFile",
         value: 1,
@@ -530,6 +529,15 @@ const TsOrdersApp = () => {
     (state) => state === 1 || state === true
   );
 
+  window.addEventListener("scroll", () => {
+    setShowUpButton(window.pageYOffset > 1500 ? "show" : "");
+  });
+
+  const handleUpButtonClick = () => {
+    window.scroll(0, 0);
+    setShowUpButton("");
+  };
+
   // Renderizado condicional de órdenes según el filtro activo
   const renderOrders = () => {
     if (isLoading) {
@@ -567,9 +575,16 @@ const TsOrdersApp = () => {
       <Header
         handlerModalSearch={handlerModalSearch}
         showButton={isAnySwitchChecked}
+        ready={isLoading}
       />
       <Filters filters={itemsFilter} onFilterClick={handleFilterClick} />
       <main className="main">{renderOrders()}</main>
+      <button
+        className={`fab-button up-button ${showUpButton}`}
+        onClick={handleUpButtonClick}
+      >
+        <span>↑</span>
+      </button>
       {isOpenModal && (
         <SearchBarModal
           open={isOpenModal}

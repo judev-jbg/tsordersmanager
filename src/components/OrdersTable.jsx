@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import "./OrdersTable.css";
 
 const OrdersTable = ({ data, onCellUpdate }) => {
   const [editCell, setEditCell] = useState({
@@ -9,6 +8,7 @@ const OrdersTable = ({ data, onCellUpdate }) => {
     originalValue: "",
   });
   const [validationStatus, setValidationStatus] = useState(true);
+  const [cellValidationMap, setCellValidationMap] = useState({});
   const inputRef = useRef(null);
   const tableRef = useRef(null);
 
@@ -22,30 +22,49 @@ const OrdersTable = ({ data, onCellUpdate }) => {
       editable: true,
       maxLength: 40,
     },
-    { id: "direccion", label: "Dirección", editable: true, maxLength: 40 },
+    { id: "direccion", label: "Dirección", editable: true, maxLength: 80 },
     { id: "pais", label: "País", editable: false },
     { id: "cp", label: "CP", editable: true, maxLength: 10 },
-    { id: "poblacion", label: "Población", editable: true, maxLength: 10 },
-    { id: "telefono", label: "Teléfono", editable: true, maxLength: 10 },
-    { id: "email", label: "Email", editable: false },
+    { id: "poblacion", label: "Población", editable: true, maxLength: 80 },
+    { id: "telefono", label: "Teléfono", editable: true, maxLength: 15 },
+    { id: "email", label: "Email", editable: true, maxLength: 255 },
     {
       id: "departamento",
       label: "Departamento",
       editable: true,
-      maxLength: 20,
+      maxLength: 40,
     },
-    { id: "contacto", label: "Contacto", editable: true, maxLength: 10 },
+    { id: "contacto", label: "Contacto", editable: true, maxLength: 40 },
     {
       id: "observaciones",
       label: "Observaciones",
       editable: true,
-      maxLength: 40,
+      maxLength: 98,
     },
-    { id: "bultos", label: "Bultos", editable: false },
-    { id: "peso", label: "Peso", editable: false },
-    { id: "movil", label: "Móvil", editable: true, maxLength: 10 },
+    // { id: "bultos", label: "Bultos", editable: false },
+    // { id: "peso", label: "Peso", editable: false },
+    { id: "movil", label: "Móvil", editable: true, maxLength: 15 },
     { id: "refc", label: "RefC", editable: true, maxLength: 14 },
   ];
+
+  // Validar todos los datos al cargar el componente
+  useEffect(() => {
+    const newValidationMap = {};
+
+    data.forEach((row) => {
+      const rowId = row.idOrder || row.id;
+
+      columns.forEach((column) => {
+        if (column.editable) {
+          const cellKey = `${rowId}-${column.id}`;
+          const value = row[column.id] || "";
+          newValidationMap[cellKey] = validateInput(column.id, value);
+        }
+      });
+    });
+
+    setCellValidationMap(newValidationMap);
+  }, [data]);
 
   // Enfocar el input cuando se activa la edición
   useEffect(() => {
@@ -79,7 +98,9 @@ const OrdersTable = ({ data, onCellUpdate }) => {
         value: value || "",
         originalValue: value || "",
       });
-      setValidationStatus(true);
+      // Validar el valor actual
+      const isValid = validateInput(column, value);
+      setValidationStatus(isValid);
     }
   };
 
@@ -90,6 +111,7 @@ const OrdersTable = ({ data, onCellUpdate }) => {
 
     // Verificar longitud máxima
     if (columnDef.maxLength && value.length > columnDef.maxLength) {
+      console.log("No cumple la logitud");
       return false;
     }
 
@@ -147,8 +169,7 @@ const OrdersTable = ({ data, onCellUpdate }) => {
 
     const success = await onCellUpdate(
       editCell.rowId,
-      columns.find((col) => col.id === editCell.column)?.label ||
-        editCell.column,
+      columns.find((col) => col.id === editCell.column)?.id || editCell.column,
       editCell.value
     );
 
@@ -159,10 +180,12 @@ const OrdersTable = ({ data, onCellUpdate }) => {
 
   // Renderizar una celda (normal o con input)
   const renderCell = (row, column) => {
-    const isEditing =
-      editCell.rowId === row.idOrder && editCell.column === column.id;
+    const rowId = row.idOrder || row.id;
+    const isEditing = editCell.rowId === rowId && editCell.column === column.id;
 
     const value = row[column.id];
+    const cellKey = `${rowId}-${column.id}`;
+    const isValid = cellValidationMap[cellKey];
 
     if (isEditing) {
       return (
@@ -173,11 +196,19 @@ const OrdersTable = ({ data, onCellUpdate }) => {
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           className={validationStatus ? "valid-input" : "invalid-input"}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+          }}
         />
       );
     }
 
-    return <span>{value}</span>;
+    // Para celdas editables, añadir clase según la validación
+    const cellClass = column.editable
+      ? `cell-data ${column.id} ${isValid === false ? "invalid-cell" : ""}`
+      : "";
+
+    return <span className={cellClass}>{value}</span>;
   };
 
   return (
@@ -194,21 +225,38 @@ const OrdersTable = ({ data, onCellUpdate }) => {
           <tbody>
             {data.map((row) => (
               <tr key={row.idOrder || row.id}>
-                {columns.map((column) => (
-                  <td
-                    key={`${row.idOrder}-${column.id}`}
-                    onDoubleClick={() =>
-                      handleCellDoubleClick(
-                        row.idOrder || row.id,
-                        column.id,
-                        row[column.id]
-                      )
-                    }
-                    className={column.editable ? "editable-cell" : ""}
-                  >
-                    {renderCell(row, column)}
-                  </td>
-                ))}
+                {columns.map((column) => {
+                  const rowId = row.idOrder || row.id;
+                  const cellKey = `${rowId}-${column.id}`;
+                  const isValid = cellValidationMap[cellKey];
+                  const isCurrentlyEditing =
+                    editCell.rowId === rowId && editCell.column === column.id;
+
+                  return (
+                    <td
+                      key={cellKey}
+                      {...(!isCurrentlyEditing
+                        ? {
+                            onDoubleClick: () =>
+                              handleCellDoubleClick(
+                                rowId,
+                                column.id,
+                                row[column.id]
+                              ),
+                          }
+                        : {})}
+                      className={
+                        column.editable
+                          ? isValid === false
+                            ? `editable-cell invalid-cell`
+                            : `editable-cell`
+                          : ``
+                      }
+                    >
+                      {renderCell(row, column)}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>

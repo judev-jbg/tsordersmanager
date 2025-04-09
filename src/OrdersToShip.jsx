@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import "./OrdersToShip.css";
 import { useNavigate } from "react-router-dom";
 import api from "./services/api";
 import OrdersTable from "./components/OrdersTable";
 import ToastNotifier from "./components/ToastNotifier";
-import "./OrdersToShip.css";
+import ImageWithOutOrders from "./components/ImageWithOutOrders";
 import * as XLSX from "xlsx";
 
 const OrdersToShip = () => {
@@ -101,25 +102,34 @@ const OrdersToShip = () => {
         response.data.header.status === "ok" &&
         response.data.header.content === 1
       ) {
-        const nameFile = response.data.nameFile;
-
-        // Paso 2: Hacer solicitud GET a /ordersHistory/{nameFile}
-        const historyResponse = await api.get(`/ordersHistory/${nameFile}`);
-
         if (
-          historyResponse.data &&
-          historyResponse.data.header &&
-          historyResponse.data.header.status === "ok" &&
-          historyResponse.data.header.content === 1
+          response.data.payload &&
+          Array.isArray(response.data.payload) &&
+          response.data.payload.length > 0
         ) {
-          // Generar y exportar Excel
-          exportToExcel(historyResponse.data.payload, nameFile);
-          showToast("Proceso completado. Descargando Excel...", "success");
+          const nameFile = response.data.payload[0].fileGenerateName;
 
-          // Redirigir a la página principal después de un breve retraso
-          setTimeout(() => {
-            navigate("/");
-          }, 2000);
+          // Paso 2: Hacer solicitud GET a /ordersHistory/{nameFile}
+          const historyResponse = await api.get(`/ordersHistory/${nameFile}`);
+
+          if (
+            historyResponse.data &&
+            historyResponse.data.header &&
+            historyResponse.data.header.status === "ok" &&
+            historyResponse.data.header.content === 1
+          ) {
+            // Generar y exportar Excel
+            console.log(historyResponse.data.payload);
+            exportToExcel(historyResponse.data.payload, nameFile);
+            showToast("Proceso completado. Descargando Excel...", "success");
+
+            // Redirigir a la página principal después de un breve retraso
+            setTimeout(() => {
+              navigate("/");
+            }, 2000);
+          } else {
+            showToast("Error al obtener historial de órdenes", "error");
+          }
         } else {
           showToast("Error al obtener historial de órdenes", "error");
         }
@@ -136,18 +146,60 @@ const OrdersToShip = () => {
 
   // Función para exportar a Excel
   const exportToExcel = (data, fileName) => {
-    const worksheet = XLSX.utils.json_to_sheet(data);
+    const rawOrdersData =
+      Array.isArray(data) && Array.isArray(data[0]) ? data[0] : data;
+
+    if (!Array.isArray(rawOrdersData) || rawOrdersData.length === 0) {
+      console.error("No hay datos para exportar a Excel", data);
+      return;
+    }
+    // Lista de campos a excluir del Excel
+    const excludedFields = [
+      "idOrder",
+      "exported",
+      "engraved",
+      "process",
+      "fileGenerateName",
+      "updateDateTime",
+    ];
+    // Filtrar los campos excluidos de cada objeto
+    const filteredOrdersData = rawOrdersData.map((order) => {
+      const filteredOrder = {};
+      Object.keys(order).forEach((key) => {
+        if (!excludedFields.includes(key)) {
+          filteredOrder[key] = order[key];
+        }
+      });
+      return filteredOrder;
+    });
+    const worksheet = XLSX.utils.json_to_sheet(filteredOrdersData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Órdenes");
-    XLSX.writeFile(workbook, `${fileName}.xlsx`);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Pedidos");
+    const cleanFileName = fileName.replace(/\.xlsx$/i, "");
+    XLSX.writeFile(workbook, `${cleanFileName}.xlsx`);
+    console.log(
+      `Excel exportado: ${cleanFileName}.xlsx con ${filteredOrdersData.length} registros`
+    );
+  };
+
+  // Funcion para volver a la pagina principal
+  const hanleBackMainPage = () => {
+    navigate("/");
   };
 
   return (
     <div className="orders-to-ship-container">
       <div className="content-wrapper">
-        <h1>Órdenes Listas para Enviar</h1>
+        <h1>Pedidos listos para Enviar</h1>
 
         <div className="actions-top">
+          <button
+            className="back-button"
+            onClick={hanleBackMainPage}
+            disabled={loading}
+          >
+            Volver
+          </button>
           <button
             className="process-button"
             onClick={handleShipmentProcess}
@@ -160,7 +212,7 @@ const OrdersToShip = () => {
         {loading ? (
           <div className="loading">Cargando órdenes...</div>
         ) : orders.length === 0 ? (
-          <div className="no-orders">No hay órdenes listas para enviar</div>
+          <ImageWithOutOrders />
         ) : (
           <OrdersTable data={orders} onCellUpdate={handleCellUpdate} />
         )}
