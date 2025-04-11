@@ -143,7 +143,11 @@ const OrderInfo = ({ order }) => {
         )}
         {order.billPostalCode && (
           <Label
-            text={order.billPostalCode}
+            text={
+              order.billPostalCode && order.billPostalCode.length === 4
+                ? `0${order.billPostalCode}`
+                : order.billPostalCode
+            }
             tooltipText="Provincia"
             positionTooltip="left"
             needSplit={false}
@@ -222,7 +226,11 @@ const OrderInfo = ({ order }) => {
         )}
 
         <Label
-          text={order.shipPostalCode}
+          text={
+            order.shipPostalCode && order.shipPostalCode.length === 4
+              ? `0${order.shipPostalCode}`
+              : order.shipPostalCode
+          }
           tooltipText="Codigo Postal"
           positionTooltip="left"
           needSplit={false}

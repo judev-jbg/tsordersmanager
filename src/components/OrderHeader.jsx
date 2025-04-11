@@ -94,7 +94,13 @@ const OrderHeader = ({ order, onSwitchChange }) => {
             <a
               className="link-ship"
               target="_blank"
-              href={`http://extranet.gls-spain.es/Extranet/public/ExpedicionASM.aspx?codigo=${order.expeditionTraking}&cpDst=${order.shipPostalCode}`}
+              href={`http://extranet.gls-spain.es/Extranet/public/ExpedicionASM.aspx?codigo=${
+                order.expeditionTraking
+              }&cpDst=${
+                order.shipPostalCode && order.shipPostalCode.length === 4
+                  ? `0${order.shipPostalCode}`
+                  : order.shipPostalCode
+              }`}
             >
               Ver envío
             </a>

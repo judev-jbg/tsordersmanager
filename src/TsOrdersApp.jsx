@@ -323,13 +323,15 @@ const TsOrdersApp = () => {
         pais: countryName || targetOrder.shipCountry,
         cp: targetOrder.shipPostalCode || "",
         poblacion: targetOrder.shipCity || "",
-        telefono: targetOrder.buyerPhoneNumber || "",
+        telefono:
+          targetOrder.shipPhoneNumber || targetOrder.buyerPhoneNumber || "",
         email: "orders@toolstock.info",
         departamento: targetOrder.amazonOrderId || "",
         contacto: targetOrder.recipientName || "",
         observaciones: targetOrder.deliveryInstructions || "",
         bultos: 1,
-        movil: targetOrder.buyerPhoneNumber || "",
+        movil:
+          targetOrder.shipPhoneNumber || targetOrder.buyerPhoneNumber || "",
         refC: targetOrder.purchaseOrderNumber || "",
         idOrder: targetOrder.amazonOrderId || "",
         process: "isFile",
