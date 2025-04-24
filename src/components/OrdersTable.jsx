@@ -44,7 +44,7 @@ const OrdersTable = ({ data, onCellUpdate }) => {
     // { id: "bultos", label: "Bultos", editable: false },
     // { id: "peso", label: "Peso", editable: false },
     { id: "movil", label: "Móvil", editable: true, maxLength: 15 },
-    { id: "refc", label: "RefC", editable: true, maxLength: 14 },
+    { id: "refC", label: "RefC", editable: true, maxLength: 14 },
   ];
 
   // Validar todos los datos al cargar el componente
@@ -69,6 +69,9 @@ const OrdersTable = ({ data, onCellUpdate }) => {
   // Enfocar el input cuando se activa la edición
   useEffect(() => {
     if (editCell.rowId && editCell.column && inputRef.current) {
+      const content = editCell.value;
+      const widthEstimated = Math.max(100, content.length * 8);
+      inputRef.current.style.width = `${widthEstimated}px`;
       inputRef.current.focus();
     }
   }, [editCell]);
