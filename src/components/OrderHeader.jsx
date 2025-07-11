@@ -20,6 +20,9 @@ const OrderHeader = ({ order, onSwitchChange }) => {
             {order.amazonOrderId}
           </span>
         </span>
+        {order.reference_ps && (
+          <span className="row-data-group separator">{order.reference_ps}</span>
+        )}
         <span className="row-data-group separator">
           <TagLine statusOrder={order.orderStatus} />
         </span>
