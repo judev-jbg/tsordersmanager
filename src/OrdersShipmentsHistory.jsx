@@ -1,59 +1,57 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import "./OrdersShipmentsHistory.css";
 import api from "./services/api";
 import ToastNotifier from "./components/ToastNotifier";
 import ShipmentsTable from "./components/ShipmentsTable";
 import ImageWithOutOrders from "./components/ImageWithOutOrders";
-import * as XLSX from "xlsx";
+import useToast from "./hooks/useToast";
+import { exportToExcel } from "./utils/excelUtils";
 
+/**
+ * Componente OrdersShipmentsHistory - REFACTORIZADO
+ * - Usa hook useToast para eliminar duplicaci贸n
+ * - Usa exportToExcel desde utils para eliminar duplicaci贸n
+ */
 const OrdersShipmentsHistory = () => {
   const navigate = useNavigate();
+  const { toast, showToast } = useToast();
   const [shipments, setShipments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [toast, setToast] = useState({ visible: false, message: "", type: "" });
 
-  // Obtener órdenes listas para enviar al cargar la página
+  // Obtener lista de env铆os al cargar la p谩gina
   useEffect(() => {
-    const fetchShipments = async () => {
-      try {
-        setLoading(true);
-        const response = await api.get("/ordersHistory");
-        if (
-          response.data &&
-          response.data.header &&
-          response.data.header.status === "ok"
-        ) {
-          setShipments(response.data.payload || []);
-        } else {
-          showToast("No se pudo cargar la lista de Envíos", "error");
-        }
-      } catch (error) {
-        console.error("Error al obtener la lista de envíos:", error);
-        showToast("Error al cargar la lista de envíos", "error");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchShipments();
   }, []);
 
-  // Mostrar notificación toast
-  const showToast = (message, type) => {
-    setToast({ visible: true, message, type });
-    setTimeout(() => {
-      setToast({ visible: false, message: "", type: "" });
-    }, 3000);
+  const fetchShipments = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/ordershistory");
+
+      if (
+        response.data &&
+        response.data.header &&
+        response.data.header.status === "ok"
+      ) {
+        setShipments(response.data.payload || []);
+      } else {
+        showToast("No se pudo cargar la lista de Env铆os", "error");
+      }
+    } catch (error) {
+      console.error("Error al obtener la lista de env铆os:", error);
+      showToast("Error al cargar la lista de env铆os", "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Función para procesar el envío de órdenes
+  // Funci贸n para procesar la descarga de un archivo de env铆o
   const handleShipmentProcess = async (nameFile) => {
     try {
       setLoading(true);
 
       // Hacer solicitud GET a /ordersHistory/{nameFile}
-      const historyResponse = await api.get(`/ordersHistory/${nameFile}`);
+      const historyResponse = await api.get(`/ordershistory/${nameFile}`);
 
       if (
         historyResponse.data &&
@@ -61,76 +59,43 @@ const OrdersShipmentsHistory = () => {
         historyResponse.data.header.status === "ok" &&
         historyResponse.data.header.content === 1
       ) {
-        // Generar y exportar Excel
-        exportToExcel(historyResponse.data.payload, nameFile);
-        showToast("Proceso completado. Descargando Excel...", "success");
+        // Generar y exportar Excel usando la utilidad refactorizada
+        const exported = exportToExcel(historyResponse.data.payload, nameFile);
 
-        // Redirigir a la página principal después de un breve retraso
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
+        if (exported) {
+          showToast("Proceso completado. Descargando Excel...", "success");
+
+          // Redirigir a la p谩gina principal despu茅s de un breve retraso
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        } else {
+          showToast("Error al generar archivo Excel", "error");
+        }
       } else {
-        showToast("Error al obtener historial de órdenes", "error");
+        showToast("Error al obtener historial de 贸rdenes", "error");
       }
     } catch (error) {
-      console.error("Error en el proceso de envío:", error);
-      showToast("Error de conexión", "error");
+      console.error("Error en el proceso de env铆o:", error);
+      showToast("Error de conexi贸n", "error");
     } finally {
       setLoading(false);
     }
   };
 
-  // Función para exportar a Excel
-  const exportToExcel = (data, fileName) => {
-    const rawOrdersData =
-      Array.isArray(data) && Array.isArray(data[0]) ? data[0] : data;
-
-    if (!Array.isArray(rawOrdersData) || rawOrdersData.length === 0) {
-      console.error("No hay datos para exportar a Excel", data);
-      return;
-    }
-    // Lista de campos a excluir del Excel
-    const excludedFields = [
-      "idOrder",
-      "exported",
-      "engraved",
-      "process",
-      "fileGenerateName",
-      "updateDateTime",
-    ];
-    // Filtrar los campos excluidos de cada objeto
-    const filteredOrdersData = rawOrdersData.map((order) => {
-      const filteredOrder = {};
-      Object.keys(order).forEach((key) => {
-        if (!excludedFields.includes(key)) {
-          filteredOrder[key] = order[key];
-        }
-      });
-      return filteredOrder;
-    });
-    const worksheet = XLSX.utils.json_to_sheet(filteredOrdersData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Pedidos");
-    const cleanFileName = fileName.replace(/\.xlsx$/i, "");
-    XLSX.writeFile(workbook, `${cleanFileName}.xlsx`);
-    console.log(
-      `Excel exportado: ${cleanFileName}.xlsx con ${filteredOrdersData.length} registros`
-    );
-  };
-
-  const hanleBackMainPage = () => {
+  const handleBackMainPage = () => {
     navigate("/");
   };
 
   return (
     <div className="orders-to-ship-container">
       <div className="content-wrapper">
-        <h1>Historial de ficheros de envios</h1>
+        <h1>Historial de ficheros de env铆os</h1>
 
         <div className="actions-top">
           <button
             className="back-button"
-            onClick={hanleBackMainPage}
+            onClick={handleBackMainPage}
             disabled={loading}
           >
             Volver

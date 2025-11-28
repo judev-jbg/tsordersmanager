@@ -1,0 +1,120 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  padding: 20px;
+}
+
+.login-card {
+  background: var(--secondary-color);
+  border-radius: 5px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  -webkit-box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  -ms-box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  -o-box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-header h1 {
+  color: var(--text-color);
+  margin: 0 0 10px 0;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.login-header p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-group input {
+  border: 1px solid var(--secondary-color);
+  /* border: none; */
+  /* background: none; */
+  padding: 12px 16px;
+  outline: none;
+  border-radius: 6px;
+  font-family: var(--font-family);
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  border: 1px solid var(--acent-color);
+}
+
+.form-group input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.login-button {
+  border: none;
+  outline: none;
+  background-color: var(--acent-color);
+  color: var(--color-button);
+  padding: 0.5rem 1rem;
+  letter-spacing: 0.05rem;
+  font-family: var(--font-family);
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 2px;
+  cursor: pointer;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+}
+
+.login-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 12px rgba(223, 163, 111, 0.4);
+  -webkit-box-shadow: 0 7px 12px rgba(223, 163, 111, 0.4);
+  -moz-box-shadow: 0 7px 12px rgba(223, 163, 111, 0.4);
+  -ms-box-shadow: 0 7px 12px rgba(223, 163, 111, 0.4);
+  -o-box-shadow: 0 7px 12px rgba(223, 163, 111, 0.4);
+  -webkit-transform: translateY(-1px);
+  -moz-transform: translateY(-1px);
+  -ms-transform: translateY(-1px);
+  -o-transform: translateY(-1px);
+}
+
+.login-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

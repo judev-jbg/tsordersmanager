@@ -12,8 +12,11 @@
 }
 
 h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 1.5rem;
-  color: var(--background-row-table-hover);
+  color: var(--text-secondary);
   margin-bottom: 20px;
 }
 
@@ -28,7 +31,7 @@ h1 {
   font-family: var(--font-family);
   font-size: 16px;
   background-color: var(--acent-color);
-  color: var(--color-button);
+  color: var(--background-color);
   border: none;
   outline: none;
   padding: 10px 20px;
@@ -55,7 +58,7 @@ h1 {
 
 .back-button:hover {
   background-color: var(--acent-color);
-  color: var(--color-button);
+  color: var(--background-color);
 }
 
 .process-button:hover {
@@ -93,7 +96,7 @@ h1 {
   height: 60px;
   border-radius: 50%;
   background-color: var(--acent-color);
-  color: var(--color-button);
+  color: var(--background-color);
   border: none;
   font-size: 24px;
   cursor: pointer;
@@ -182,10 +185,6 @@ h1 {
   position: relative;
 }
 
-.editable-cell:hover {
-  background-color: var(--secondary-color);
-}
-
 .editable-cell::before {
   content: "✎";
   position: absolute;
@@ -209,6 +208,7 @@ h1 {
   width: 100%;
   padding: 8px;
   border: 1px solid var(--acent-color);
+  background-color: var(--secondary-color);
   border-radius: 4px;
   font-size: 14px;
   outline: none;
@@ -217,10 +217,6 @@ h1 {
 /* Estilo para celdas inválidas */
 .invalid-cell {
   color: var(--danger-color);
-}
-
-.invalid-cell:hover {
-  color: var(--danger-color-dark);
 }
 
 /* Estilo para el input en edición */

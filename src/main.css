@@ -12,22 +12,18 @@
   -moz-osx-font-smoothing: grayscale;
   --max-width: 1600px;
   --font-family: Manrope, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  --acent-color: #ffc390;
-  --acent-color-hover: #d19f72;
-  --acent-color-disabled: #8b6b4f;
-  --secondary-color: #424242;
-  --background-row-table: #555555;
-  --background-row-table-hover: #838383;
+
+  /* --secondary-color: #424242; */
+
   --color-button: #000;
-  --background-header-table: #181818;
-  --border-color: #5f5d59;
+
   --skeletonA-color: #555555;
   --skeletonB-color: #636363;
   --height-header: 6.5rem;
   --height-filters: 2.5rem;
   --danger-color: #fd5957;
   --danger-color-dark: #cf4b49;
-  --background-color: #2d2d2d;
+  /* --background-color: #2d2d2d; */
   --background-color-alpha: rgba(45, 45, 45, 0);
   --color: rgba(255, 255, 255, 0.87);
   --background-modal: rgba(20, 20, 20, 0.5);
@@ -35,24 +31,11 @@
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 1.5;
-  font-family: var(--font-family);
-  background-color: var(--background-color);
-  color: var(--color);
-}
-
 @media (prefers-color-scheme: light) {
   :root {
     --color: #2e2e2e;
-    --background-color: #ffffff;
-    --secondary-color: #e6e6e6;
+    --background-color: #e6e6e6;
+    --secondary-color: #fff;
     --acent-color: #b88b64;
     --acent-color-hover: #a37d5b;
     --border-color: #c2bfb9;
@@ -62,4 +45,38 @@ body {
     --skeletonB-color: #b1b1b1;
     --skeletonA-color: #949494;
   }
+}
+
+/* Badge para contador en botón */
+.badge {
+  background-color: #ff4444;
+  color: white;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 8px;
+  display: inline-block;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px 14px;
+  margin-right: 10px;
+  border-radius: 50%;
+  color: var(--text-color);
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  background-color: var(--secondary-color);
 }

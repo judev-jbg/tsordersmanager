@@ -1,0 +1,50 @@
+/* Variables para tema oscuro (por defecto) */
+:root[data-theme="dark"] {
+  --background-color: #2d2d2d;
+  --secondary-color: #424242;
+  --bg-tertiary: #3d3d3d;
+  --text-color: #fdfdfd;
+  --text-secondary: #b0b0b0;
+  --border-color: #5f5d59;
+  --shadow: rgba(0, 0, 0, 0.5);
+  --acent-color: #ffc390;
+  --acent-color-hover: #d19f72;
+  --acent-color-disabled: #8b6b4f;
+  --danger-color-dark: #cf4b49;
+  --background-header-table: #181818;
+  --background-row-table: #555555;
+  --background-row-table-hover: #838383;
+}
+
+/* Variables para tema claro */
+:root[data-theme="light"] {
+  --background-color: #f3f3f3;
+  --secondary-color: #fff;
+  --bg-tertiary: #e0e0e0;
+  --text-color: #3d3d3d;
+  --text-secondary: #666666;
+  --border-color: #e2e2e2;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --acent-color: #8b6b4f;
+  --acent-color-hover: #634a35;
+  --acent-color-disabled: #634a35;
+  --danger-color-dark: #fd9b9a;
+  --background-header-table: #bbbbbb;
+  --background-row-table: #f3f3f3;
+  --background-row-table-hover: #e4e4e4;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Aplicar variables */
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: var(--font-family);
+}

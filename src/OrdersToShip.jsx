@@ -5,49 +5,49 @@ import api from "./services/api";
 import OrdersTable from "./components/OrdersTable";
 import ToastNotifier from "./components/ToastNotifier";
 import ImageWithOutOrders from "./components/ImageWithOutOrders";
-import * as XLSX from "xlsx";
+import useToast from "./hooks/useToast";
+import { exportToExcel } from "./utils/excelUtils";
 
+/**
+ * Componente OrdersToShip - REFACTORIZADO
+ * - Usa hook useToast para eliminar duplicaci贸n
+ * - Usa exportToExcel desde utils para eliminar duplicaci贸n
+ * - Mejor manejo de errores y estados
+ */
 const OrdersToShip = () => {
   const navigate = useNavigate();
+  const { toast, showToast } = useToast();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [toast, setToast] = useState({ visible: false, message: "", type: "" });
 
-  // Obtener órdenes listas para enviar al cargar la página
+  // Obtener 贸rdenes listas para enviar al cargar la p谩gina
   useEffect(() => {
-    const fetchOrdersToShip = async () => {
-      try {
-        setLoading(true);
-        const response = await api.get("/ordersreadytoship");
-        if (
-          response.data &&
-          response.data.header &&
-          response.data.header.status === "ok"
-        ) {
-          setOrders(response.data.payload || []);
-        } else {
-          showToast("No se pudieron cargar las órdenes", "error");
-        }
-      } catch (error) {
-        console.error("Error al obtener órdenes para enviar:", error);
-        showToast("Error al cargar órdenes", "error");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchOrdersToShip();
   }, []);
 
-  // Mostrar notificación toast
-  const showToast = (message, type) => {
-    setToast({ visible: true, message, type });
-    setTimeout(() => {
-      setToast({ visible: false, message: "", type: "" });
-    }, 3000);
+  const fetchOrdersToShip = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/ordersreadytoship");
+
+      if (
+        response.data &&
+        response.data.header &&
+        response.data.header.status === "ok"
+      ) {
+        setOrders(response.data.payload || []);
+      } else {
+        showToast("No se pudieron cargar las 贸rdenes", "error");
+      }
+    } catch (error) {
+      console.error("Error al obtener 贸rdenes para enviar:", error);
+      showToast("Error al cargar 贸rdenes", "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Función para actualizar el valor de una celda
+  // Funci贸n para actualizar el valor de una celda
   const handleCellUpdate = async (rowId, columnName, columnValue) => {
     try {
       const requestBody = {
@@ -82,15 +82,16 @@ const OrdersToShip = () => {
       }
     } catch (error) {
       console.error("Error al actualizar celda:", error);
-      showToast("Error de conexión", "error");
+      showToast("Error de conexi贸n", "error");
       return false;
     }
   };
 
-  // Función para procesar el envío de órdenes
+  // Funci贸n para procesar el env铆o de 贸rdenes
   const handleShipmentProcess = async () => {
     try {
       setLoading(true);
+
       // Paso 1: Hacer solicitud PATCH a /registershipment
       const response = await api.patch("/registershipment", {
         shipmentType: "usingFile",
@@ -110,7 +111,7 @@ const OrdersToShip = () => {
           const nameFile = response.data.payload[0].fileGenerateName;
 
           // Paso 2: Hacer solicitud GET a /ordersHistory/{nameFile}
-          const historyResponse = await api.get(`/ordersHistory/${nameFile}`);
+          const historyResponse = await api.get(`/ordershistory/${nameFile}`);
 
           if (
             historyResponse.data &&
@@ -118,84 +119,56 @@ const OrdersToShip = () => {
             historyResponse.data.header.status === "ok" &&
             historyResponse.data.header.content === 1
           ) {
-            // Generar y exportar Excel
-            console.log(historyResponse.data.payload);
-            exportToExcel(historyResponse.data.payload, nameFile);
-            showToast("Proceso completado. Descargando Excel...", "success");
+            // Generar y exportar Excel usando la utilidad refactorizada
+            const exported = exportToExcel(
+              historyResponse.data.payload,
+              nameFile
+            );
 
-            // Redirigir a la página principal después de un breve retraso
-            setTimeout(() => {
-              navigate("/");
-            }, 2000);
+            if (exported) {
+              showToast("Proceso completado. Descargando Excel...", "success");
+
+              // Redirigir a la p谩gina principal despu茅s de un breve retraso
+              setTimeout(() => {
+                navigate("/");
+              }, 2000);
+            } else {
+              showToast("Error al generar archivo Excel", "error");
+            }
           } else {
-            showToast("Error al obtener historial de órdenes", "error");
+            showToast("Error al obtener historial de 贸rdenes", "error");
           }
         } else {
-          showToast("Error al obtener historial de órdenes", "error");
+          showToast("No hay 贸rdenes para procesar", "error");
         }
       } else {
-        showToast("Error al registrar envío", "error");
+        showToast("Error al registrar env铆o", "error");
       }
     } catch (error) {
-      console.error("Error en el proceso de envío:", error);
-      showToast("Error de conexión", "error");
+      console.error("Error en el proceso de env铆o:", error);
+      showToast("Error de conexi贸n", "error");
     } finally {
       setLoading(false);
     }
   };
 
-  // Función para exportar a Excel
-  const exportToExcel = (data, fileName) => {
-    const rawOrdersData =
-      Array.isArray(data) && Array.isArray(data[0]) ? data[0] : data;
-
-    if (!Array.isArray(rawOrdersData) || rawOrdersData.length === 0) {
-      console.error("No hay datos para exportar a Excel", data);
-      return;
-    }
-    // Lista de campos a excluir del Excel
-    const excludedFields = [
-      "idOrder",
-      "exported",
-      "engraved",
-      "process",
-      "fileGenerateName",
-      "updateDateTime",
-    ];
-    // Filtrar los campos excluidos de cada objeto
-    const filteredOrdersData = rawOrdersData.map((order) => {
-      const filteredOrder = {};
-      Object.keys(order).forEach((key) => {
-        if (!excludedFields.includes(key)) {
-          filteredOrder[key] = order[key];
-        }
-      });
-      return filteredOrder;
-    });
-    const worksheet = XLSX.utils.json_to_sheet(filteredOrdersData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Pedidos");
-    const cleanFileName = fileName.replace(/\.xlsx$/i, "");
-    XLSX.writeFile(workbook, `${cleanFileName}.xlsx`);
-    console.log(
-      `Excel exportado: ${cleanFileName}.xlsx con ${filteredOrdersData.length} registros`
-    );
-  };
-
-  // Funcion para volver a la pagina principal
-  const hanleBackMainPage = () => {
+  // Funci贸n para volver a la p谩gina principal
+  const handleBackMainPage = () => {
     navigate("/");
   };
 
   return (
     <div className="orders-to-ship-container">
       <div className="content-wrapper">
-        <h1>Pedidos listos para Enviar</h1>
+        <h1>
+          Pedidos listos para Enviar{" "}
+          {orders.length > 0 && <span className="badge">{orders.length}</span>}
+        </h1>
 
         <div className="actions-top">
           <button
             className="back-button"
-            onClick={hanleBackMainPage}
+            onClick={handleBackMainPage}
             disabled={loading}
           >
             Volver
@@ -222,7 +195,7 @@ const OrdersToShip = () => {
           onClick={handleShipmentProcess}
           disabled={loading || orders.length === 0}
         >
-          <span>✓</span>
+          <span>➤</span>
         </button>
       </div>
 

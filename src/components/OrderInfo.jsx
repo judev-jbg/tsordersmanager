@@ -164,7 +164,11 @@ const OrderInfo = ({ order }) => {
 
         {order.buyerPhoneNumber && (
           <Label
-            text={order.buyerPhoneNumber}
+            // eslint-disable-next-line react/prop-types
+            text={order.buyerPhoneNumber
+              .replace(" ", "")
+              .replace(".0", "")
+              .replace("+34", "")}
             tooltipText="Teléfono"
             positionTooltip="left"
             needSplit={false}
@@ -243,7 +247,11 @@ const OrderInfo = ({ order }) => {
         />
         {order.shipPhoneNumber && (
           <Label
-            text={order.shipPhoneNumber}
+            // eslint-disable-next-line react/prop-types
+            text={order.shipPhoneNumber
+              .replace(" ", "")
+              .replace(".0", "")
+              .replace("+34", "")}
             tooltipText="Teléfono"
             positionTooltip="left"
             needSplit={false}

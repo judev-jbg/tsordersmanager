@@ -9,8 +9,12 @@ import OrderSkeleton from "./components/OrderSkeleton";
 import SearchNoResult from "./components/SearchNoResult";
 import useAddressFormatter from "./hooks/useAddressFormatter";
 import useCodCountry from "./hooks/useCodCountry";
+import useSessionTimeout from "./hooks/useSessionTimeout";
+import { SESSION_CONFIG } from "./config/sessionConfig";
 
 const TsOrdersApp = () => {
+  // Session timeout (30 minutos)
+  useSessionTimeout(SESSION_CONFIG.TIMEOUT);
   const ordersFilter = [
     {
       id: 1,
@@ -92,7 +96,7 @@ const TsOrdersApp = () => {
         "/orderspending/delayed",
         "/ordersoutofstock",
         "/ordersoutofstock/untiltoday",
-        "/ordersoutofStock/delayed",
+        "/ordersoutofstock/delayed",
         "/ordersshipfake",
       ];
 
@@ -318,20 +322,44 @@ const TsOrdersApp = () => {
       const requestBody = {
         servicio: 37,
         horario: 3,
-        destinatario: targetOrder.recipientName || "",
+        destinatario:
+          targetOrder.recipientName.replace(
+            "PO" + targetOrder.purchaseOrderNumber,
+            ""
+          ) || "",
         direccion: formattedAddress,
         pais: countryName || targetOrder.shipCountry,
         cp: targetOrder.shipPostalCode || "",
         poblacion: targetOrder.shipCity || "",
         telefono:
-          targetOrder.shipPhoneNumber || targetOrder.buyerPhoneNumber || "",
+          targetOrder.shipPhoneNumber
+            .replace(" ", "")
+            .replace(".0", "")
+            .replace("+34", "") ||
+          targetOrder.buyerPhoneNumber
+            .replace(" ", "")
+            .replace(".0", "")
+            .replace("+34", "") ||
+          663142955,
         email: "orders@toolstock.info",
         departamento: targetOrder.amazonOrderId || "",
-        contacto: targetOrder.recipientName || "",
+        contacto:
+          targetOrder.recipientName.replace(
+            "PO" + targetOrder.purchaseOrderNumber,
+            ""
+          ) || "",
         observaciones: targetOrder.deliveryInstructions || "",
         bultos: 1,
         movil:
-          targetOrder.shipPhoneNumber || targetOrder.buyerPhoneNumber || "",
+          targetOrder.shipPhoneNumber
+            .replace(" ", "")
+            .replace(".0", "")
+            .replace("+34", "") ||
+          targetOrder.buyerPhoneNumber
+            .replace(" ", "")
+            .replace(".0", "")
+            .replace("+34", "") ||
+          663142955,
         refC: targetOrder.purchaseOrderNumber || "",
         idOrder: targetOrder.amazonOrderId || "",
         process: "isFile",
@@ -527,9 +555,12 @@ const TsOrdersApp = () => {
     }
   };
 
-  const isAnySwitchChecked = Object.values(switchStates).some(
-    (state) => state === 1 || state === true
-  );
+  // Contar switches activos que empiezan con "ship-"
+  const shipSwitchCount = Object.keys(switchStates).filter(
+    (key) => key.startsWith("ship-") && (switchStates[key] === 1 || switchStates[key] === true)
+  ).length;
+
+  const isAnySwitchChecked = shipSwitchCount > 0;
 
   window.addEventListener("scroll", () => {
     setShowUpButton(window.pageYOffset > 1500 ? "show" : "");
@@ -577,6 +608,7 @@ const TsOrdersApp = () => {
       <Header
         handlerModalSearch={handlerModalSearch}
         showButton={isAnySwitchChecked}
+        shipCount={shipSwitchCount}
         ready={isLoading}
       />
       <Filters filters={itemsFilter} onFilterClick={handleFilterClick} />
