@@ -17,12 +17,10 @@
 
   --color-button: #000;
 
-  --skeletonA-color: #555555;
-  --skeletonB-color: #636363;
   --height-header: 6.5rem;
   --height-filters: 2.5rem;
   --danger-color: #fd5957;
-  --danger-color-dark: #cf4b49;
+
   /* --background-color: #2d2d2d; */
   --background-color-alpha: rgba(45, 45, 45, 0);
   --color: rgba(255, 255, 255, 0.87);

@@ -14,6 +14,8 @@
   --background-header-table: #181818;
   --background-row-table: #555555;
   --background-row-table-hover: #838383;
+  --skeletonA-color: #555555;
+  --skeletonB-color: #636363;
 }
 
 /* Variables para tema claro */
@@ -32,6 +34,8 @@
   --background-header-table: #bbbbbb;
   --background-row-table: #f3f3f3;
   --background-row-table-hover: #e4e4e4;
+  --skeletonA-color: #c5c3c3;
+  --skeletonB-color: #dddddd;
 }
 
 html {
