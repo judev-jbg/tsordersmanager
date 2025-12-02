@@ -168,7 +168,8 @@ const OrderInfo = ({ order }) => {
             text={order.buyerPhoneNumber
               .replace(" ", "")
               .replace(".0", "")
-              .replace("+34", "")}
+              .replace("+34", "")
+              .replace("+34-", "")}
             tooltipText="Teléfono"
             positionTooltip="left"
             needSplit={false}
@@ -251,7 +252,8 @@ const OrderInfo = ({ order }) => {
             text={order.shipPhoneNumber
               .replace(" ", "")
               .replace(".0", "")
-              .replace("+34", "")}
+              .replace("+34", "")
+              .replace("+34-", "")}
             tooltipText="Teléfono"
             positionTooltip="left"
             needSplit={false}

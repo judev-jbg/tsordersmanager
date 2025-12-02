@@ -118,80 +118,7 @@ const TsOrdersApp = () => {
       );
 
       if (activeOrders) {
-        setOrders([activeOrders.data]); //TODO: ELIMINAR DATOS ESTATICOS Y DESCOMENTAR ESTA LINEA
-        // setOrders([
-        //   {
-        //     header: {
-        //       status: "ok",
-        //       content: 1,
-        //       resource: "orderbyid",
-        //       count: 1,
-        //     },
-        //     payload: [
-        //       {
-        //         amazonOrderId: "404-1345458-7375513",
-        //         buyerEmail: "wvs9dg67f350xx5@marketplace.amazon.es",
-        //         orderStatus: "Pendiente de envío",
-        //         latestShipDate: "2025-03-27 22:59:59",
-        //         latestDeliveryDate: "2025-04-01 21:59:59",
-        //         purchaseDate: "2025-03-26 11:15:54",
-        //         buyerName: "PIMASA",
-        //         buyerPhoneNumber: "608158140",
-        //         recipientName: "Isidro Cabrera Aragón",
-        //         shipAddress1: "P.I. Espaldillas, calle 9, nave 8",
-        //         shipAddress2: null,
-        //         shipAddress3: null,
-        //         shipCity: "Alcalá de Guadaira",
-        //         shipState: "sevilla",
-        //         shipPostalCode: "41500",
-        //         shipCountry: "ES",
-        //         shipPhoneNumber: "608158140",
-        //         billName: "Isidro Cabrera Aragon",
-        //         billAddress1: "Calle Monte Carmelo",
-        //         billAddress2: "31 bajo",
-        //         billAddress3: null,
-        //         billCity: "Sevilla",
-        //         billState: "Sevilla",
-        //         billPostalCode: "41011",
-        //         billCountry: "ES",
-        //         deliveryInstructions: "Horario de 8h a 14h de L-V",
-        //         salesChannel: "Amazon.es",
-        //         isBusinessOrder: 1,
-        //         purchaseOrderNumber: null,
-        //         buyerCompanyName: "PIMASA",
-        //         buyerTaxRegistrationId: "ESA41670910",
-        //         buyerTaxRegistrationCountry: "ES",
-        //         isAmazonInvoiced: 1,
-        //         isBuyerRequestedCancellation: 0,
-        //         pendingWithoutStock: 0,
-        //         markForShipment: null,
-        //         selectedForShipment: null,
-        //         expeditionTraking: null,
-        //         codBar: null,
-        //         isShipFake: 0,
-        //         qOrders: 2,
-        //         qOrderShip: 2,
-        //         items: [
-        //           {
-        //             orderItemId: "47698212192602",
-        //             sku: "4932478620",
-        //             productName:
-        //               "Milwaukee - Tijeras de electricista con almacenamiento",
-        //             quantityPurchased: 2,
-        //             itemPrice: "46.00",
-        //             itemTax: "7.98",
-        //             shippingPrice: "0.00",
-        //             shippingTax: "0.00",
-        //             vatExclusiveItemPrice: "38.02",
-        //             vatExclusiveShippingPrice: "0.00",
-        //             asin: "B0B12Q2XTQ",
-        //             referenciaProv: "5808  4932478620",
-        //           },
-        //         ],
-        //       },
-        //     ],
-        //   },
-        // ]);
+        setOrders([activeOrders.data]);
       } else if (responses.length > 0) {
         // Si no se encuentra el recurso activo, usar el primero
         setOrders([responses[0].data]);
@@ -335,11 +262,13 @@ const TsOrdersApp = () => {
           targetOrder.shipPhoneNumber
             .replace(" ", "")
             .replace(".0", "")
-            .replace("+34", "") ||
+            .replace("+34", "")
+            .replace("+34-", "") ||
           targetOrder.buyerPhoneNumber
             .replace(" ", "")
             .replace(".0", "")
-            .replace("+34", "") ||
+            .replace("+34", "")
+            .replace("+34-", "") ||
           663142955,
         email: "orders@toolstock.info",
         departamento: targetOrder.amazonOrderId || "",
@@ -354,11 +283,13 @@ const TsOrdersApp = () => {
           targetOrder.shipPhoneNumber
             .replace(" ", "")
             .replace(".0", "")
-            .replace("+34", "") ||
+            .replace("+34", "")
+            .replace("+34-", "") ||
           targetOrder.buyerPhoneNumber
             .replace(" ", "")
             .replace(".0", "")
-            .replace("+34", "") ||
+            .replace("+34", "")
+            .replace("+34-", "") ||
           663142955,
         refC: targetOrder.purchaseOrderNumber || "",
         idOrder: targetOrder.amazonOrderId || "",
@@ -557,7 +488,9 @@ const TsOrdersApp = () => {
 
   // Contar switches activos que empiezan con "ship-"
   const shipSwitchCount = Object.keys(switchStates).filter(
-    (key) => key.startsWith("ship-") && (switchStates[key] === 1 || switchStates[key] === true)
+    (key) =>
+      key.startsWith("ship-") &&
+      (switchStates[key] === 1 || switchStates[key] === true)
   ).length;
 
   const isAnySwitchChecked = shipSwitchCount > 0;
