@@ -21,7 +21,7 @@
 /* Variables para tema claro */
 :root[data-theme="light"] {
   --background-color: #f3f3f3;
-  --secondary-color: #fff;
+  --secondary-color: #ffffff;
   --bg-tertiary: #e0e0e0;
   --text-color: #3d3d3d;
   --text-secondary: #666666;
