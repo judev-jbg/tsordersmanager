@@ -15,11 +15,22 @@ const OrderHeader = ({ order, onSwitchChange }) => {
     <div className="order-header">
       <span className="row-data">
         <span className="row-data-group order-id">
-          <span className="label">Nº de pedido:</span>
+          <span className="label">Pedido AMZ:</span>
           <span onClick={() => handleCopySingle(order.amazonOrderId)}>
             {order.amazonOrderId}
           </span>
         </span>
+        {order.num_order_ahora &&(
+        <span className="row-data-group order-id row-data-group separator">
+          <span className="label">Pedido Ahora:</span>
+          <span onClick={() => handleCopySingle(order.num_order_ahora)}>
+            {order.num_order_ahora}
+          </span>
+        </span>
+
+        )
+        }
+
         {order.reference_ps && (
           <span className="row-data-group separator">{order.reference_ps}</span>
         )}
