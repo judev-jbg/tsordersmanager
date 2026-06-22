@@ -13,6 +13,7 @@ import useSessionTimeout from "./hooks/useSessionTimeout";
 import useScrollVisibility from "./hooks/useScrollVisibility";
 import useOrderResources from "./hooks/useOrderResources";
 import useShipmentActions from "./hooks/useShipmentActions";
+import useShipmentFlow from "./hooks/useShipmentFlow";
 import { SESSION_CONFIG } from "./config/sessionConfig";
 import { findOrderForAction, getRevertedSwitchState } from "./utils/orderActions";
 
@@ -91,6 +92,11 @@ const TsOrdersApp = () => {
   const formattedAddress = useAddressFormatter(addressToFormat);
   const getCountryCode = useCodCountry();
   const { createShipment, removeShipment } = useShipmentActions(getCountryCode);
+  const { submit: submitShipment } = useShipmentFlow(
+    createShipment,
+    (id, value) =>
+      setSwitchStates((currentStates) => ({ ...currentStates, [id]: value }))
+  );
   const showUpButton = useScrollVisibility(1500) ? "show" : "";
 
   // Función para obtener todas las órdenes de todos los recursos
@@ -163,12 +169,11 @@ const TsOrdersApp = () => {
     // Solo procedemos si hay una dirección para formatear y ya tenemos la dirección formateada
     if (addressToFormat && formattedAddress) {
       // Continuamos con el proceso de envío aquí
-      continueWithShipmentRequest(
-        addressToFormat.targetOrder,
-        formattedAddress
+      submitShipment(addressToFormat.targetOrder, formattedAddress).finally(() =>
+        setAddressToFormat(null)
       );
     }
-  }, [addressToFormat, formattedAddress]);
+  }, [addressToFormat, formattedAddress, submitShipment]);
 
   // Función para manejar el clic en un filtro
   /*

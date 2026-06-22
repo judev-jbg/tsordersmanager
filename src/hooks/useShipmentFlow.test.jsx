@@ -24,4 +24,19 @@ describe("useShipmentFlow", () => {
     expect(result.current.pendingOrder).toBeNull();
     expect(result.current.lastResult).toEqual({ orderId: "order-1", success: false });
   });
+
+  it("updates the shipment switch on success and reverts it on failure", async () => {
+    const updateSwitch = vi.fn();
+    const { result, rerender } = renderHook(
+      ({ createShipment }) => useShipmentFlow(createShipment, updateSwitch),
+      { initialProps: { createShipment: vi.fn().mockResolvedValue(true) } }
+    );
+
+    await act(() => result.current.submit(order, "Calle Mayor 1"));
+    expect(updateSwitch).toHaveBeenLastCalledWith("ship-order-1", 1);
+
+    rerender({ createShipment: vi.fn().mockResolvedValue(false) });
+    await act(() => result.current.submit(order, "Calle Mayor 1"));
+    expect(updateSwitch).toHaveBeenLastCalledWith("ship-order-1", 0);
+  });
 });
