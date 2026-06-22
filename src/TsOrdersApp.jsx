@@ -520,6 +520,7 @@ const TsOrdersApp = () => {
         key={order.amazonOrderId || index}
         order={order}
         onSwitchChange={handleSwitchChange}
+        switchStates={switchStates}
       />
     ));
   };

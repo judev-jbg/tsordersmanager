@@ -3,7 +3,13 @@ import TagLine from "./TagLine";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 
 // eslint-disable-next-line react/prop-types
-const OrderHeader = ({ order, onSwitchChange }) => {
+const OrderHeader = ({ order, onSwitchChange, switchStates = {} }) => {
+  const stockChecked =
+    switchStates[`stock-${order.amazonOrderId}`] ?? order.pendingWithoutStock;
+  const shipChecked =
+    switchStates[`ship-${order.amazonOrderId}`] ?? order.markForShipment;
+  const fakeChecked =
+    switchStates[`fake-${order.amazonOrderId}`] ?? order.isShipFake;
   const handleSwitchChange = (id, isChecked, actionSwitch) => {
     onSwitchChange(id, isChecked, actionSwitch);
   };
@@ -40,7 +46,7 @@ const OrderHeader = ({ order, onSwitchChange }) => {
         <span className="row-data-group separator">
           <Switch
             label="Sin stock" // eslint-disable-next-line react/prop-types
-            checked={order.pendingWithoutStock}
+            checked={stockChecked}
             onChange={handleSwitchChange}
             // eslint-disable-next-line react/prop-types
             id={`stock-${order.amazonOrderId}`}
@@ -51,19 +57,19 @@ const OrderHeader = ({ order, onSwitchChange }) => {
           <Switch
             label="Seleccionar para enviar"
             // eslint-disable-next-line react/prop-types
-            checked={order.markForShipment}
+            checked={shipChecked}
             onChange={handleSwitchChange}
             // eslint-disable-next-line react/prop-types
             id={`ship-${order.amazonOrderId}`}
             action="ship"
           />
         </span>
-        {order.pendingWithoutStock === 1 ? (
+        {Boolean(stockChecked) ? (
           <span className="row-data-group separator">
             <Switch
               label="Envio Fake"
               // eslint-disable-next-line react/prop-types
-              checked={order.isShipFake}
+              checked={fakeChecked}
               onChange={handleSwitchChange}
               // eslint-disable-next-line react/prop-types
               id={`fake-${order.amazonOrderId}`}
