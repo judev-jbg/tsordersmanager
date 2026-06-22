@@ -1,7 +1,10 @@
 import React from "react";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import ProductImage from "./ProductImage";
-import { calculateOrderTotal } from "../utils/orderProductTotals";
+import {
+  calculateOrderTotal,
+  calculateProductTotals,
+} from "../utils/orderProductTotals";
 
 const OrderProducts = ({ order }) => {
   const copyToClipboard = useCopyToClipboard();
@@ -30,35 +33,19 @@ const OrderProducts = ({ order }) => {
       <tbody>
         {/* Renderizar productos desde aqui */}
         {items.map((item) => {
-          // Calculamos importes
           const cantidadComprada = item.quantityPurchased;
-          const precioUnidadSinIVA =
-            parseFloat(item.vatExclusiveItemPrice) /
-            parseFloat(item.quantityPurchased);
-          const precioUnidadConIVA =
-            parseFloat(item.itemTax) === 0
-              ? parseFloat(item.vatExclusiveItemPrice) /
-                parseFloat(item.quantityPurchased)
-              : parseFloat(item.vatExclusiveItemPrice) /
-                  parseFloat(item.quantityPurchased) +
-                parseFloat(item.itemTax) / parseFloat(item.quantityPurchased);
-          const subTotalProducto = parseFloat(item.itemPrice);
-
-          const productoSoloIVA = parseFloat(item.itemTax);
-          const productoSinIVA = (subTotalProducto - productoSoloIVA).toFixed(
-            2
-          );
-
-          const envio = parseFloat(item.shippingPrice);
-          const envioSinIVA =
-            parseFloat(item.shippingPrice || 0) -
-            parseFloat(item.shippingTax || 0);
-          const envioSoloIVA = parseFloat(item.shippingTax || 0);
-
-          // Totales
-          const totalConIVA = subTotalProducto + envio;
-          const totalSinIVA = totalConIVA - (productoSoloIVA + envioSoloIVA);
-          const totalIVA = productoSoloIVA + envioSoloIVA;
+          const totals = calculateProductTotals(item);
+          const precioUnidadSinIVA = totals.unitWithoutTax;
+          const precioUnidadConIVA = totals.unitWithTax;
+          const subTotalProducto = Number.parseFloat(item.itemPrice) || 0;
+          const productoSoloIVA = Number.parseFloat(item.itemTax) || 0;
+          const productoSinIVA = totals.productWithoutTax.toFixed(2);
+          const envio = Number.parseFloat(item.shippingPrice) || 0;
+          const envioSinIVA = totals.shippingWithoutTax;
+          const envioSoloIVA = Number.parseFloat(item.shippingTax) || 0;
+          const totalConIVA = totals.totalWithTax;
+          const totalSinIVA = totals.totalWithoutTax;
+          const totalIVA = totals.totalTax;
 
           return (
             <tr key={item.orderItemId}>

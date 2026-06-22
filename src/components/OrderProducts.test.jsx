@@ -28,4 +28,23 @@ describe("OrderProducts", () => {
     expect(screen.getByText("30 €")).toBeInTheDocument();
     expect(screen.getByText(/TOTAL DEL PEDIDO: 30\.00€/)).toBeInTheDocument();
   });
+
+  it("does not render NaN for missing monetary values", () => {
+    render(
+      <OrderProducts
+        order={{
+          items: [
+            {
+              orderItemId: "item-empty",
+              quantityPurchased: 1,
+              sku: "SKU-EMPTY",
+              productName: "Producto vacío",
+            },
+          ],
+        }}
+      />
+    );
+
+    expect(screen.queryByText(/NaN/)).not.toBeInTheDocument();
+  });
 });
