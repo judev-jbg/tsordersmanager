@@ -13,6 +13,7 @@ import useSessionTimeout from "./hooks/useSessionTimeout";
 import useScrollVisibility from "./hooks/useScrollVisibility";
 import useOrderResources from "./hooks/useOrderResources";
 import { SESSION_CONFIG } from "./config/sessionConfig";
+import { findOrderForAction, getRevertedSwitchState } from "./utils/orderActions";
 
 const TsOrdersApp = () => {
   // Session timeout (30 minutos)
@@ -346,10 +347,9 @@ const TsOrdersApp = () => {
     const orderId = id.replace(prefix, "");
 
     // Buscar la orden correspondiente en el estado de órdenes
-    let targetOrder = null;
+    let targetOrder = findOrderForAction(orders, id, actionSwitch);
 
     // Buscar en todas las órdenes de todos los recursos
-    targetOrder = orders.find((order) => order.amazonOrderId === orderId);
 
     // Si no encontramos la orden, mostramos un error
     if (!targetOrder) {
@@ -471,7 +471,7 @@ const TsOrdersApp = () => {
       // Revertir el cambio del switch en caso de error
       setSwitchStates((prevStates) => ({
         ...prevStates,
-        [id]: isChecked ? 0 : 1, // Invertir el estado
+        [id]: getRevertedSwitchState(isChecked), // Invertir el estado
       }));
 
       // Limpiar el estado de dirección si es necesario
