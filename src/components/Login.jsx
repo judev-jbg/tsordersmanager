@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import { useAuthContext } from "../context/AuthContext";
 import useToast from "../hooks/useToast";
 import ToastNotifier from "./ToastNotifier";
 import "./Login.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, loading } = useAuth();
+  const { login, loading } = useAuthContext();
   const { toast, showToast } = useToast();
   const [credentials, setCredentials] = useState({
     username: "",

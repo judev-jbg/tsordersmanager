@@ -1,12 +1,12 @@
 import { Navigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import { useAuthContext } from "../context/AuthContext";
 
 /**
  * Componente para proteger rutas que requieren autenticaci贸n
  * Redirige al login si el usuario no est谩 autenticado
  */
 const ProtectedRoute = ({ children }) => {
-  const { authenticated, loading } = useAuth();
+  const { authenticated, loading } = useAuthContext();
 
   // Mostrar loading mientras se verifica autenticaci贸n
   if (loading) {

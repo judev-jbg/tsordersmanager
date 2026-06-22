@@ -1,12 +1,12 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "./useAuth";
+import { useAuthContext } from "../context/AuthContext";
 
 const DEFAULT_TIMEOUT = 30 * 60 * 1000; // 30 minutos en milisegundos
 
 export const useSessionTimeout = (timeout = DEFAULT_TIMEOUT) => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout } = useAuthContext();
   const timeoutRef = useRef(null);
 
   const resetTimer = useCallback(() => {
