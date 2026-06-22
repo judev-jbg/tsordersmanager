@@ -24,7 +24,7 @@ export default function SearchBarModal({
       const response = await api.get(`/order/${search}`);
 
       // Asignar la respuesta a orders en TsOrdersApp
-      setOrders([response.data]);
+      setOrders(response.data.payload || []);
 
       // Desactivar todos los filtros
       setItemsFilter((prevFilters) =>

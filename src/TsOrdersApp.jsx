@@ -11,6 +11,7 @@ import useAddressFormatter from "./hooks/useAddressFormatter";
 import useCodCountry from "./hooks/useCodCountry";
 import useSessionTimeout from "./hooks/useSessionTimeout";
 import useScrollVisibility from "./hooks/useScrollVisibility";
+import useOrderResources from "./hooks/useOrderResources";
 import { SESSION_CONFIG } from "./config/sessionConfig";
 
 const TsOrdersApp = () => {
@@ -76,16 +77,21 @@ const TsOrdersApp = () => {
   ];
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [switchStates, setSwitchStates] = useState({});
-  const [itemsFilter, setItemsFilter] = useState(ordersFilter);
-  const [orders, setOrders] = useState([]);
-  const [activeResource, setActiveResource] = useState("orderspending");
-  const [isLoading, setIsLoading] = useState(true);
+  const {
+    filters: itemsFilter,
+    orders,
+    loading: isLoading,
+    selectFilter: handleFilterClick,
+    setFilters: setItemsFilter,
+    setOrders,
+  } = useOrderResources(ordersFilter);
   const [addressToFormat, setAddressToFormat] = useState(null);
   const formattedAddress = useAddressFormatter(addressToFormat);
   const getCountryCode = useCodCountry();
   const showUpButton = useScrollVisibility(1500) ? "show" : "";
 
   // Función para obtener todas las órdenes de todos los recursos
+  /*
   const fetchAllOrders = async () => {
     try {
       setIsLoading(true); // Indicamos que estamos cargando
@@ -132,17 +138,13 @@ const TsOrdersApp = () => {
     }
   };
 
-  // Cargar ordenes
-  useEffect(() => {
-    fetchAllOrders();
-  }, []);
-
+  */
   // Cargar datos al montar el componente
   useEffect(() => {
     // Solo proceder si hay órdenes disponibles
-    if (orders.length > 0 && orders[0]?.payload) {
+    if (orders.length > 0) {
       const initialSwitchStates = {};
-      orders[0].payload.forEach((item) => {
+      orders.forEach((item) => {
         // Usa una propiedad única de cada order como ID
         const id = `ship-${item.amazonOrderId}`;
         const initialValue = item.markForShipment || 0;
@@ -166,7 +168,8 @@ const TsOrdersApp = () => {
   }, [addressToFormat, formattedAddress]);
 
   // Función para manejar el clic en un filtro
-  const handleFilterClick = async (filterId) => {
+  /*
+  const legacyHandleFilterClick = async (filterId) => {
     // Actualizar el filtro activo
     const updatedFilters = itemsFilter.map((filter) => ({
       ...filter,
@@ -179,7 +182,6 @@ const TsOrdersApp = () => {
     const selectedFilter = itemsFilter.find((filter) => filter.id === filterId);
 
     if (selectedFilter) {
-      setActiveResource(selectedFilter.resource);
       setIsLoading(true);
 
       // Hacer una petición inmediata para el recurso seleccionado
@@ -188,7 +190,7 @@ const TsOrdersApp = () => {
         const response = await api.get(`/${selectedFilter.resource}`);
         // console.log(`Solicitud de ordenes a /${selectedFilter.resource}`);
         setOrders([response.data]);
-        updateFilterCounters(response);
+        legacyUpdateFilterCounters(response);
         setIsLoading(false);
       } catch (error) {
         console.error(
@@ -201,7 +203,7 @@ const TsOrdersApp = () => {
   };
 
   // Función para actualizar los contadores de los filtros
-  const updateFilterCounters = (responses) => {
+  const legacyUpdateFilterCounters = (responses) => {
     // Crear un mapa de recursos a contadores
     const resourceCountMap = {};
 
@@ -237,6 +239,7 @@ const TsOrdersApp = () => {
     });
   };
 
+  */
   const handlerModalSearch = () => {
     setIsOpenModal(!isOpenModal);
   };
@@ -346,17 +349,7 @@ const TsOrdersApp = () => {
     let targetOrder = null;
 
     // Buscar en todas las órdenes de todos los recursos
-    orders.forEach((orderGroup) => {
-      if (orderGroup && orderGroup.payload) {
-        const foundOrder = orderGroup.payload.find(
-          (order) => order.amazonOrderId === orderId
-        );
-
-        if (foundOrder) {
-          targetOrder = foundOrder;
-        }
-      }
-    });
+    targetOrder = orders.find((order) => order.amazonOrderId === orderId);
 
     // Si no encontramos la orden, mostramos un error
     if (!targetOrder) {
@@ -510,21 +503,11 @@ const TsOrdersApp = () => {
         .map((_, index) => <OrderSkeleton key={index} />);
     }
 
-    if (orders.length === 0 || orders[0].payload.length === 0) {
+    if (orders.length === 0) {
       return <SearchNoResult />;
     }
 
-    const activeOrder = orders[0];
-
-    if (!activeOrder || !activeOrder.payload) {
-      return <SearchNoResult />;
-    }
-
-    if (activeOrder.payload.length === 0) {
-      return <SearchNoResult />;
-    }
-
-    return activeOrder.payload.map((order, index) => (
+    return orders.map((order, index) => (
       <Order
         key={order.amazonOrderId || index}
         order={order}
