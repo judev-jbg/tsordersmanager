@@ -7,6 +7,7 @@ import ToastNotifier from "./components/ToastNotifier";
 import ImageWithOutOrders from "./components/ImageWithOutOrders";
 import useToast from "./hooks/useToast";
 import { exportToExcel } from "./utils/excelUtils";
+import { updateOrderCell } from "./utils/orderUtils";
 
 /**
  * Componente OrdersToShip - REFACTORIZADO
@@ -66,13 +67,8 @@ const OrdersToShip = () => {
         response.data.message === "Registro actualizado"
       ) {
         // Actualizar estado local con el nuevo valor
-        setOrders(
-          orders.map((order) => {
-            if (order.idOrder === rowId) {
-              return { ...order, [columnName.toLowerCase()]: columnValue };
-            }
-            return order;
-          })
+        setOrders((currentOrders) =>
+          updateOrderCell(currentOrders, rowId, columnName, columnValue)
         );
         showToast("Dato actualizado correctamente", "success");
         return true;

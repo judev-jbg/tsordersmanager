@@ -45,6 +45,7 @@ const OrdersTable = ({ data, onCellUpdate }) => {
     // { id: "peso", label: "Peso", editable: false },
     { id: "movil", label: "Móvil", editable: true, maxLength: 15 },
     { id: "refC", label: "RefC", editable: true, maxLength: 14 },
+        { id: "num_pedido_ahora", label: "Número de pedido", editable: true, maxLength: 14 },
   ];
 
   // Validar todos los datos al cargar el componente

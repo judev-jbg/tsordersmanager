@@ -292,6 +292,7 @@ const TsOrdersApp = () => {
             .replace("+34-", "") ||
           663142955,
         refC: targetOrder.purchaseOrderNumber || "",
+        num_pedido_ahora: targetOrder.num_order_ahora || null,
         idOrder: targetOrder.amazonOrderId || "",
         process: "isFile",
         value: 1,
