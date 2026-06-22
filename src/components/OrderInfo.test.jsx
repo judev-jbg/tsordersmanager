@@ -47,4 +47,22 @@ describe("OrderInfo", () => {
 
     expect(screen.getByText("Datos del envío")).toBeInTheDocument();
   });
+
+  it("formats recipient, phone and postal code values", () => {
+    render(
+      <OrderInfo
+        order={{
+          ...order,
+          recipientName: "Ana POREF-1",
+          purchaseOrderNumber: "REF-1",
+          shipPhoneNumber: "+34-600 000.0",
+          shipPostalCode: "8001",
+        }}
+      />
+    );
+
+    expect(screen.getByText(/^Ana\s*$/)).toBeInTheDocument();
+    expect(screen.getByText("600000")).toBeInTheDocument();
+    expect(screen.getAllByText("08001")).toHaveLength(2);
+  });
 });

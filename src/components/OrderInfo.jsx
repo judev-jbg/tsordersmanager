@@ -6,6 +6,11 @@ import useFormatDate from "../hooks/useFormatDate";
 import useIsOutOfTime from "../hooks/useIsOutOfTime";
 import useAddressFormatter from "../hooks/useAddressFormatter";
 import useCountry from "../hooks/useCountry";
+import {
+  formatPostalCode,
+  formatRecipient,
+  normalizePhone,
+} from "../utils/orderDisplay";
 
 const OrderInfo = ({ order }) => {
   const {
@@ -146,11 +151,7 @@ const OrderInfo = ({ order }) => {
         )}
         {order.billPostalCode && (
           <Label
-            text={
-              order.billPostalCode && order.billPostalCode.length === 4
-                ? `0${order.billPostalCode}`
-                : order.billPostalCode
-            }
+            text={formatPostalCode(order.billPostalCode)}
             tooltipText="Provincia"
             positionTooltip="left"
             needSplit={false}
@@ -168,11 +169,7 @@ const OrderInfo = ({ order }) => {
         {order.buyerPhoneNumber && (
           <Label
             // eslint-disable-next-line react/prop-types
-            text={order.buyerPhoneNumber
-              .replace(" ", "")
-              .replace(".0", "")
-              .replace("+34", "")
-              .replace("+34-", "")}
+            text={normalizePhone(order.buyerPhoneNumber)}
             tooltipText="Teléfono"
             positionTooltip="left"
             needSplit={false}
@@ -192,9 +189,9 @@ const OrderInfo = ({ order }) => {
 
         {order.purchaseOrderNumber ? (
           <Label
-            text={order.recipientName.replace(
-              "PO" + order.purchaseOrderNumber,
-              ""
+            text={formatRecipient(
+              order.recipientName,
+              order.purchaseOrderNumber
             )}
             tooltipText="Destinatario"
             positionTooltip="left"
@@ -234,11 +231,7 @@ const OrderInfo = ({ order }) => {
         )}
 
         <Label
-          text={
-            order.shipPostalCode && order.shipPostalCode.length === 4
-              ? `0${order.shipPostalCode}`
-              : order.shipPostalCode
-          }
+          text={formatPostalCode(order.shipPostalCode)}
           tooltipText="Codigo Postal"
           positionTooltip="left"
           needSplit={false}
@@ -252,11 +245,7 @@ const OrderInfo = ({ order }) => {
         {order.shipPhoneNumber && (
           <Label
             // eslint-disable-next-line react/prop-types
-            text={order.shipPhoneNumber
-              .replace(" ", "")
-              .replace(".0", "")
-              .replace("+34", "")
-              .replace("+34-", "")}
+            text={normalizePhone(order.shipPhoneNumber)}
             tooltipText="Teléfono"
             positionTooltip="left"
             needSplit={false}
