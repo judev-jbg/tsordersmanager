@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "./services/api";
+import ordersService from "./services/ordersService";
 import ToastNotifier from "./components/ToastNotifier";
 import ShipmentsTable from "./components/ShipmentsTable";
 import ImageWithOutOrders from "./components/ImageWithOutOrders";
@@ -26,14 +26,10 @@ const OrdersShipmentsHistory = () => {
   const fetchShipments = async () => {
     try {
       setLoading(true);
-      const response = await api.get("/ordershistory");
+      const shipmentList = await ordersService.getShipmentList();
 
-      if (
-        response.data &&
-        response.data.header &&
-        response.data.header.status === "ok"
-      ) {
-        setShipments(response.data.payload || []);
+      if (shipmentList) {
+        setShipments(shipmentList);
       } else {
         showToast("No se pudo cargar la lista de Env铆os", "error");
       }
@@ -51,16 +47,11 @@ const OrdersShipmentsHistory = () => {
       setLoading(true);
 
       // Hacer solicitud GET a /ordersHistory/{nameFile}
-      const historyResponse = await api.get(`/ordershistory/${nameFile}`);
+      const shipmentHistory = await ordersService.getShipmentHistory(nameFile);
 
-      if (
-        historyResponse.data &&
-        historyResponse.data.header &&
-        historyResponse.data.header.status === "ok" &&
-        historyResponse.data.header.content === 1
-      ) {
+      if (shipmentHistory) {
         // Generar y exportar Excel usando la utilidad refactorizada
-        const exported = exportToExcel(historyResponse.data.payload, nameFile);
+        const exported = exportToExcel(shipmentHistory, nameFile);
 
         if (exported) {
           showToast("Proceso completado. Descargando Excel...", "success");
