@@ -73,6 +73,36 @@ describe("useOrderResources", () => {
     ]);
   });
 
+  it("matches active resources regardless of header capitalization", async () => {
+    const stockFilters = [
+      { ...filters[0], active: false },
+      { ...filters[1], active: true },
+    ];
+
+    server.use(
+      http.get("*/orderspending", () =>
+        HttpResponse.json({
+          header: { status: "ok", resource: "ordersPending", count: 3 },
+          payload: [{ amazonOrderId: "pending-order" }],
+        })
+      ),
+      http.get("*/ordersoutofstock", () =>
+        HttpResponse.json({
+          header: { status: "ok", resource: "ordersOutOfStock", count: 1 },
+          payload: [{ amazonOrderId: "407-4568744-1761167" }],
+        })
+      )
+    );
+
+    const { result } = renderHook(() => useOrderResources(stockFilters));
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    expect(result.current.orders).toEqual([
+      { amazonOrderId: "407-4568744-1761167" },
+    ]);
+  });
+
   it("stops loading and keeps prior orders when selecting a failing resource", async () => {
     let outOfStockRequests = 0;
 

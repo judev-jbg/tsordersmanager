@@ -1,17 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
 import api from "../services/api";
 
+const normalizeResource = (resource = "") => resource.toLowerCase();
+
 const updateCounters = (filters, responses) => {
   const counters = responses.reduce((accumulator, response) => {
     const resource = response.data?.header?.resource;
-    if (resource) accumulator[resource] = response.data.header.count;
+    if (resource) accumulator[normalizeResource(resource)] = response.data.header.count;
     return accumulator;
   }, {});
 
   return filters.map((filter) => ({
     ...filter,
-    counter: Object.hasOwn(counters, filter.resource)
-      ? counters[filter.resource]
+    counter: Object.hasOwn(counters, normalizeResource(filter.resource))
+      ? counters[normalizeResource(filter.resource)]
       : filter.counter,
   }));
 };
@@ -31,7 +33,9 @@ const useOrderResources = (initialFilters) => {
       const updatedFilters = updateCounters(resources, responses);
       const activeResource = updatedFilters.find((filter) => filter.active);
       const activeResponse = responses.find(
-        (response) => response.data?.header?.resource === activeResource?.resource
+        (response) =>
+          normalizeResource(response.data?.header?.resource) ===
+          normalizeResource(activeResource?.resource)
       );
 
       setFilters(updatedFilters);
