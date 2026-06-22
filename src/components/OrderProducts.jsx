@@ -1,6 +1,7 @@
 import React from "react";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import ProductImage from "./ProductImage";
+import { calculateOrderTotal } from "../utils/orderProductTotals";
 
 const OrderProducts = ({ order }) => {
   const copyToClipboard = useCopyToClipboard();
@@ -10,15 +11,7 @@ const OrderProducts = ({ order }) => {
   // Verificamos que order.items existe y es un array
   const items = order?.items || [];
 
-  // Calculamos el total de todo el pedido
-  const calculateOrderTotal = () => {
-    let total = 0;
-    items.forEach((item) => {
-      // Sumamos precio con impuestos multiplicado por cantidad
-      total += parseFloat(item.itemPrice) + parseFloat(item.shippingPrice);
-    });
-    return total.toFixed(2);
-  };
+  const orderTotal = calculateOrderTotal(items).toFixed(2);
 
   return (
     <table className="w-full">
@@ -185,7 +178,7 @@ const OrderProducts = ({ order }) => {
         {/* Renderizar productos hasta aqui */}
         <tr>
           <td colSpan="8" className="text-right border-l border-r order-total">
-            TOTAL DEL PEDIDO: {calculateOrderTotal()}€
+            TOTAL DEL PEDIDO: {orderTotal}€
           </td>
         </tr>
       </tbody>
