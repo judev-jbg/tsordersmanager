@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { validateOrderTableValue } from "../utils/orderTableRules";
+import { ORDER_TABLE_COLUMNS } from "../config/orderTableColumns";
 
 const OrdersTable = ({ data, onCellUpdate }) => {
   const [editCell, setEditCell] = useState({
@@ -14,7 +15,7 @@ const OrdersTable = ({ data, onCellUpdate }) => {
   const tableRef = useRef(null);
 
   // Definición de columnas y sus propiedades
-  const columns = [
+  const legacyColumns = [
     { id: "servicio", label: "Servicio", editable: false },
     { id: "horario", label: "Horario", editable: false },
     {
@@ -48,6 +49,7 @@ const OrdersTable = ({ data, onCellUpdate }) => {
     { id: "refC", label: "RefC", editable: true, maxLength: 14 },
         { id: "num_pedido_ahora", label: "Número de pedido", editable: true, maxLength: 14 },
   ];
+  const columns = ORDER_TABLE_COLUMNS;
 
   // Validar todos los datos al cargar el componente
   useEffect(() => {
