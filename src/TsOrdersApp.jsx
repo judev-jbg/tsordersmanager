@@ -10,6 +10,7 @@ import SearchNoResult from "./components/SearchNoResult";
 import useAddressFormatter from "./hooks/useAddressFormatter";
 import useCodCountry from "./hooks/useCodCountry";
 import useSessionTimeout from "./hooks/useSessionTimeout";
+import useScrollVisibility from "./hooks/useScrollVisibility";
 import { SESSION_CONFIG } from "./config/sessionConfig";
 
 const TsOrdersApp = () => {
@@ -77,12 +78,12 @@ const TsOrdersApp = () => {
   const [switchStates, setSwitchStates] = useState({});
   const [itemsFilter, setItemsFilter] = useState(ordersFilter);
   const [orders, setOrders] = useState([]);
-  const [showUpButton, setShowUpButton] = useState("");
   const [activeResource, setActiveResource] = useState("orderspending");
   const [isLoading, setIsLoading] = useState(true);
   const [addressToFormat, setAddressToFormat] = useState(null);
   const formattedAddress = useAddressFormatter(addressToFormat);
   const getCountryCode = useCodCountry();
+  const showUpButton = useScrollVisibility(1500) ? "show" : "";
 
   // Función para obtener todas las órdenes de todos los recursos
   const fetchAllOrders = async () => {
@@ -496,13 +497,8 @@ const TsOrdersApp = () => {
 
   const isAnySwitchChecked = shipSwitchCount > 0;
 
-  window.addEventListener("scroll", () => {
-    setShowUpButton(window.pageYOffset > 1500 ? "show" : "");
-  });
-
   const handleUpButtonClick = () => {
     window.scroll(0, 0);
-    setShowUpButton("");
   };
 
   // Renderizado condicional de órdenes según el filtro activo

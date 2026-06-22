@@ -1,10 +1,6 @@
-import { useState } from "react";
 // eslint-disable-next-line react/prop-types
 const Switch = ({ label, checked, onChange, id, action }) => {
-  const [isChecked, setIsChecked] = useState(checked);
-
   const handleSwitchChange = (event) => {
-    setIsChecked(event.target.checked);
     onChange(id, event.target.checked, action);
   };
 
@@ -17,7 +13,7 @@ const Switch = ({ label, checked, onChange, id, action }) => {
         className="switch-checkbox"
         type="checkbox"
         id={id}
-        checked={isChecked || 0}
+        checked={Boolean(checked)}
         onChange={handleSwitchChange}
       />
       <div className="switch"></div>

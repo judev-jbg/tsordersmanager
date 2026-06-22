@@ -39,6 +39,9 @@ const OrderInfo = ({ order }) => {
     billState,
   };
   const getCountryName = useCountry();
+  const billingAddress = useAddressFormatter(addressBillData);
+  const shippingAddress = useAddressFormatter(addressShipData);
+
   return (
     <div className="order-info">
       <div className="order-info-sumary">
@@ -118,7 +121,7 @@ const OrderInfo = ({ order }) => {
 
         {order.billAddress1 && (
           <Label
-            text={useAddressFormatter(addressBillData)}
+            text={billingAddress}
             tooltipText="Dirección"
             positionTooltip="left"
             needSplit={false}
@@ -207,7 +210,7 @@ const OrderInfo = ({ order }) => {
         )}
 
         <Label
-          text={useAddressFormatter(addressShipData)}
+          text={shippingAddress}
           tooltipText="Dirección"
           positionTooltip="left"
           needSplit={false}
