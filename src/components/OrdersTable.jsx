@@ -1,15 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import { validateOrderTableValue } from "../utils/orderTableRules";
 import { ORDER_TABLE_COLUMNS } from "../config/orderTableColumns";
+import useEditableCell from "../hooks/useEditableCell";
 
 const OrdersTable = ({ data, onCellUpdate }) => {
-  const [editCell, setEditCell] = useState({
-    rowId: null,
-    column: null,
-    value: "",
-    originalValue: "",
-  });
-  const [validationStatus, setValidationStatus] = useState(true);
+  const {
+    cell: editCell,
+    isValid: validationStatus,
+    open: openEdit,
+    change: changeEdit,
+    cancel: cancelEdit,
+    save: saveEdit,
+  } = useEditableCell(onCellUpdate);
   const [cellValidationMap, setCellValidationMap] = useState({});
   const inputRef = useRef(null);
   const tableRef = useRef(null);
@@ -99,15 +101,7 @@ const OrdersTable = ({ data, onCellUpdate }) => {
     // Solo permitir edición en columnas editables
     const columnDef = columns.find((col) => col.id === column);
     if (columnDef && columnDef.editable) {
-      setEditCell({
-        rowId,
-        column,
-        value: value || "",
-        originalValue: value || "",
-      });
-      // Validar el valor actual
-      const isValid = validateInput(column, value);
-      setValidationStatus(isValid);
+      openEdit(rowId, column, value);
     }
   };
 
@@ -119,14 +113,7 @@ const OrdersTable = ({ data, onCellUpdate }) => {
   // Manejar cambios en el input
   const handleInputChange = (e) => {
     const newValue = e.target.value;
-    setEditCell((prev) => ({
-      ...prev,
-      value: newValue,
-    }));
-
-    // Validar el nuevo valor
-    const isValid = validateInput(editCell.column, newValue);
-    setValidationStatus(isValid);
+    changeEdit(newValue);
   };
 
   // Manejar teclas (Enter para guardar, Escape para cancelar)
@@ -141,27 +128,6 @@ const OrdersTable = ({ data, onCellUpdate }) => {
         // Si hay cambios y son válidos, guardar
         await saveEdit();
       }
-    }
-  };
-
-  // Cancelar la edición
-  const cancelEdit = () => {
-    setEditCell({ rowId: null, column: null, value: "", originalValue: "" });
-    setValidationStatus(true);
-  };
-
-  // Guardar la edición
-  const saveEdit = async () => {
-    if (!validationStatus) return;
-
-    const success = await onCellUpdate(
-      editCell.rowId,
-      columns.find((col) => col.id === editCell.column)?.id || editCell.column,
-      editCell.value
-    );
-
-    if (success) {
-      cancelEdit();
     }
   };
 
