@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./TsOrdersApp.css";
 import api from "./services/api";
 import Header from "./components/Header";
@@ -92,10 +92,14 @@ const TsOrdersApp = () => {
   const formattedAddress = useAddressFormatter(addressToFormat);
   const getCountryCode = useCodCountry();
   const { createShipment, removeShipment } = useShipmentActions(getCountryCode);
+  const updateShipmentSwitch = useCallback(
+    (id, value) =>
+      setSwitchStates((currentStates) => ({ ...currentStates, [id]: value })),
+    []
+  );
   const { submit: submitShipment } = useShipmentFlow(
     createShipment,
-    (id, value) =>
-      setSwitchStates((currentStates) => ({ ...currentStates, [id]: value }))
+    updateShipmentSwitch
   );
   const showUpButton = useScrollVisibility(1500) ? "show" : "";
 
