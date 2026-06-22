@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { validateOrderTableValue } from "../utils/orderTableRules";
 
 const OrdersTable = ({ data, onCellUpdate }) => {
   const [editCell, setEditCell] = useState({
@@ -110,27 +111,7 @@ const OrdersTable = ({ data, onCellUpdate }) => {
 
   // Validar entrada según la columna
   const validateInput = (column, value) => {
-    const columnDef = columns.find((col) => col.id === column);
-    if (!columnDef) return true;
-
-    // Verificar longitud máxima
-    if (columnDef.maxLength && value.length > columnDef.maxLength) {
-      console.log("No cumple la logitud");
-      return false;
-    }
-
-    // Aquí puedes añadir más validaciones específicas por columna si es necesario
-    switch (column) {
-      case "telefono":
-      case "movil":
-        // Solo permitir números y algunos caracteres especiales
-        return /^[0-9+\-\s]*$/.test(value);
-      case "cp":
-        // Permitir alfanuméricos y guiones para códigos postales internacionales
-        return /^[0-9a-zA-Z\-\s]*$/.test(value);
-      default:
-        return true;
-    }
+    return validateOrderTableValue(column, value);
   };
 
   // Manejar cambios en el input
