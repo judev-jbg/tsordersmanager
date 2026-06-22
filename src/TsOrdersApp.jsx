@@ -368,6 +368,11 @@ const TsOrdersApp = () => {
       return;
     }
 
+    setSwitchStates((prevStates) => ({
+      ...prevStates,
+      [id]: isChecked ? 1 : 0,
+    }));
+
     try {
       // Manejar cada tipo de acción según el valor del switch
       if (actionSwitch === "ship") {
