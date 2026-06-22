@@ -12,6 +12,7 @@ import useCodCountry from "./hooks/useCodCountry";
 import useSessionTimeout from "./hooks/useSessionTimeout";
 import useScrollVisibility from "./hooks/useScrollVisibility";
 import useOrderResources from "./hooks/useOrderResources";
+import useShipmentActions from "./hooks/useShipmentActions";
 import { SESSION_CONFIG } from "./config/sessionConfig";
 import { findOrderForAction, getRevertedSwitchState } from "./utils/orderActions";
 
@@ -89,6 +90,7 @@ const TsOrdersApp = () => {
   const [addressToFormat, setAddressToFormat] = useState(null);
   const formattedAddress = useAddressFormatter(addressToFormat);
   const getCountryCode = useCodCountry();
+  const { createShipment, removeShipment } = useShipmentActions(getCountryCode);
   const showUpButton = useScrollVisibility(1500) ? "show" : "";
 
   // Función para obtener todas las órdenes de todos los recursos
@@ -308,8 +310,8 @@ const TsOrdersApp = () => {
       console.log("Cuerpo de la solicitud:", requestBody);
 
       // Realizar la solicitud POST
-      const response = await api.post("/ordersreadytoship", requestBody);
-      console.log("Respuesta de la API:", response.data);
+      const created = await createShipment(targetOrder, formattedAddress);
+      if (!created) throw new Error("Could not create shipment");
 
       // Limpiar el estado después de completar la solicitud
       setAddressToFormat(null);
@@ -386,11 +388,8 @@ const TsOrdersApp = () => {
           console.log("Cuerpo de la solicitud DELETE:", deleteRequestBody);
 
           // Realizar la solicitud DELETE
-          const response = await api.delete("/ordersreadytoship", {
-            data: deleteRequestBody,
-          });
-
-          console.log("Respuesta de la API (DELETE):", response.data);
+          const removed = await removeShipment(targetOrder);
+          if (!removed) throw new Error("Could not remove shipment");
         }
         // Actualiza el estado del switch Ship
         setSwitchStates((prevStates) => ({
