@@ -132,7 +132,7 @@ OrderHeader.propTypes = {
     pendingWithoutStock: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
     markForShipment: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
     isShipFake: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
-    num_order_ahora: PropTypes.string,
+    num_order_ahora: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     reference_ps: PropTypes.string,
     orderStatus: PropTypes.string,
     qOrders: PropTypes.number,
