@@ -2,7 +2,7 @@ import { useState } from "react";
 import useSplitText from "../hooks/useSplitText";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import { FaClipboard } from "react-icons/fa";
-// eslint-disable-next-line react/prop-types
+import PropTypes from "prop-types";
 const Label = ({ text, tooltipText, positionTooltip, needSplit }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isHoveredIconCopy, setIsHoveredIconCopy] = useState(false);
@@ -72,6 +72,13 @@ const Label = ({ text, tooltipText, positionTooltip, needSplit }) => {
       )}
     </span>
   );
+};
+
+Label.propTypes = {
+  text: PropTypes.string.isRequired,
+  tooltipText: PropTypes.string.isRequired,
+  positionTooltip: PropTypes.string.isRequired,
+  needSplit: PropTypes.bool.isRequired,
 };
 
 export default Label;

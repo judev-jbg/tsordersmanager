@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
-// eslint-disable-next-line react/prop-types
 const Button = ({ shipCount = 0 }) => {
   const navigate = useNavigate();
   const handleClick = () => {
@@ -12,5 +12,7 @@ const Button = ({ shipCount = 0 }) => {
     </button>
   );
 };
+
+Button.propTypes = { shipCount: PropTypes.number };
 
 export default Button;

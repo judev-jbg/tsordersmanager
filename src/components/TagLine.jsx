@@ -1,7 +1,7 @@
 import { useState } from "react";
 import getBackgroundState from "../services/ConfigOrderState";
+import PropTypes from "prop-types";
 
-// eslint-disable-next-line react/prop-types
 const TagLine = ({ statusOrder }) => {
   const [isHovered, setIsHovered] = useState(false);
   return (
@@ -18,5 +18,7 @@ const TagLine = ({ statusOrder }) => {
     </div>
   );
 };
+
+TagLine.propTypes = { statusOrder: PropTypes.string.isRequired };
 
 export default TagLine;

@@ -5,8 +5,8 @@ import ThemeToggle from "./ThemeToggle";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import useToast from "../hooks/useToast";
+import PropTypes from "prop-types";
 
-// eslint-disable-next-line react/prop-types
 const Header = ({ handlerModalSearch, showButton, shipCount = 0, ready }) => {
   const navigate = useNavigate();
   const { logout, user } = useAuthContext();
@@ -60,6 +60,13 @@ const Header = ({ handlerModalSearch, showButton, shipCount = 0, ready }) => {
       </div>
     </header>
   );
+};
+
+Header.propTypes = {
+  handlerModalSearch: PropTypes.func.isRequired,
+  showButton: PropTypes.bool.isRequired,
+  shipCount: PropTypes.number,
+  ready: PropTypes.bool.isRequired,
 };
 
 export default Header;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import getBackgroundTagRadius from "../services/ConfigTagRadius";
+import PropTypes from "prop-types";
 
-// eslint-disable-next-line react/prop-types
 const TagRadius = ({ label, tooltipText }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -18,6 +18,11 @@ const TagRadius = ({ label, tooltipText }) => {
       {isHovered && <div className="tooltip">{tooltipText}</div>}
     </div>
   );
+};
+
+TagRadius.propTypes = {
+  label: PropTypes.string.isRequired,
+  tooltipText: PropTypes.string.isRequired,
 };
 
 export default TagRadius;

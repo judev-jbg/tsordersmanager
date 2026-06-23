@@ -1,6 +1,6 @@
 import { MdOutlineManageSearch } from "react-icons/md";
+import PropTypes from "prop-types";
 
-// eslint-disable-next-line react/prop-types
 const SearchBar = ({ handlerModalSearch }) => {
   return (
     <>
@@ -13,5 +13,7 @@ const SearchBar = ({ handlerModalSearch }) => {
     </>
   );
 };
+
+SearchBar.propTypes = { handlerModalSearch: PropTypes.func.isRequired };
 
 export default SearchBar;
