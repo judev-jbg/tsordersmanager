@@ -1,8 +1,8 @@
+import PropTypes from "prop-types";
 import Switch from "./Switch";
 import TagLine from "./TagLine";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 
-// eslint-disable-next-line react/prop-types
 const OrderHeader = ({ order, onSwitchChange, switchStates = {} }) => {
   const stockChecked =
     switchStates[`stock-${order.amazonOrderId}`] ?? order.pendingWithoutStock;
@@ -45,10 +45,9 @@ const OrderHeader = ({ order, onSwitchChange, switchStates = {} }) => {
         </span>
         <span className="row-data-group separator">
           <Switch
-            label="Sin stock" // eslint-disable-next-line react/prop-types
+            label="Sin stock"
             checked={stockChecked}
             onChange={handleSwitchChange}
-            // eslint-disable-next-line react/prop-types
             id={`stock-${order.amazonOrderId}`}
             action="stock"
           />
@@ -56,22 +55,18 @@ const OrderHeader = ({ order, onSwitchChange, switchStates = {} }) => {
         <span className="row-data-group separator">
           <Switch
             label="Seleccionar para enviar"
-            // eslint-disable-next-line react/prop-types
             checked={shipChecked}
             onChange={handleSwitchChange}
-            // eslint-disable-next-line react/prop-types
             id={`ship-${order.amazonOrderId}`}
             action="ship"
           />
         </span>
-        {Boolean(stockChecked) ? (
+        {stockChecked ? (
           <span className="row-data-group separator">
             <Switch
               label="Envio Fake"
-              // eslint-disable-next-line react/prop-types
               checked={fakeChecked}
               onChange={handleSwitchChange}
-              // eslint-disable-next-line react/prop-types
               id={`fake-${order.amazonOrderId}`}
               action="fake"
             />
@@ -129,6 +124,24 @@ const OrderHeader = ({ order, onSwitchChange, switchStates = {} }) => {
       </span>
     </div>
   );
+};
+
+OrderHeader.propTypes = {
+  order: PropTypes.shape({
+    amazonOrderId: PropTypes.string.isRequired,
+    pendingWithoutStock: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+    markForShipment: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+    isShipFake: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+    num_order_ahora: PropTypes.string,
+    reference_ps: PropTypes.string,
+    orderStatus: PropTypes.string,
+    qOrders: PropTypes.number,
+    qOrderShip: PropTypes.number,
+    expeditionTraking: PropTypes.string,
+    shipPostalCode: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  }).isRequired,
+  onSwitchChange: PropTypes.func.isRequired,
+  switchStates: PropTypes.object,
 };
 
 export default OrderHeader;

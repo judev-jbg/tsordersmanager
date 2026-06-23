@@ -1,4 +1,5 @@
-// eslint-disable-next-line react/prop-types
+import PropTypes from "prop-types";
+
 const Switch = ({ label, checked, onChange, id, action }) => {
   const handleSwitchChange = (event) => {
     onChange(id, event.target.checked, action);
@@ -19,6 +20,14 @@ const Switch = ({ label, checked, onChange, id, action }) => {
       <div className="switch"></div>
     </label>
   );
+};
+
+Switch.propTypes = {
+  label: PropTypes.string.isRequired,
+  checked: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  onChange: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
+  action: PropTypes.oneOf(["ship", "stock", "fake"]).isRequired,
 };
 
 export default Switch;
