@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import imgProductDefault from "../assets/img/not-available.png";
 const ProductImage = ({ referenciaProv, productName }) => {
   const [imgSrc, setImgSrc] = useState(imgProductDefault);
@@ -41,6 +42,11 @@ const ProductImage = ({ referenciaProv, productName }) => {
       style={{ width: "100%", height: "100%", objectFit: "contain" }}
     />
   );
+};
+
+ProductImage.propTypes = {
+  referenciaProv: PropTypes.string,
+  productName: PropTypes.string,
 };
 
 export default ProductImage;

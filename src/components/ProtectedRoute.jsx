@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import PropTypes from "prop-types";
 import { useAuthContext } from "../context/AuthContext";
 
 /**
@@ -31,6 +32,10 @@ const ProtectedRoute = ({ children }) => {
 
   // Si está autenticado, mostrar el componente hijo
   return children;
+};
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default ProtectedRoute;
