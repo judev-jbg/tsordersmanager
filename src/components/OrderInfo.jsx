@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import TagRadius from "./TagRadius";
 import Flag from "./Flag";
 import Witness from "./Witness";
@@ -168,7 +169,6 @@ const OrderInfo = ({ order }) => {
 
         {order.buyerPhoneNumber && (
           <Label
-            // eslint-disable-next-line react/prop-types
             text={normalizePhone(order.buyerPhoneNumber)}
             tooltipText="Teléfono"
             positionTooltip="left"
@@ -244,7 +244,6 @@ const OrderInfo = ({ order }) => {
         />
         {order.shipPhoneNumber && (
           <Label
-            // eslint-disable-next-line react/prop-types
             text={normalizePhone(order.shipPhoneNumber)}
             tooltipText="Teléfono"
             positionTooltip="left"
@@ -284,6 +283,45 @@ const OrderInfo = ({ order }) => {
       </div>
     </div>
   );
+};
+
+OrderInfo.propTypes = {
+  order: PropTypes.shape({
+    amazonOrderId: PropTypes.string,
+    salesChannel: PropTypes.string,
+    purchaseDate: PropTypes.string,
+    latestShipDate: PropTypes.string,
+    latestDeliveryDate: PropTypes.string,
+    isBusinessOrder: PropTypes.oneOf([0, 1]),
+    items: PropTypes.arrayOf(
+      PropTypes.shape({
+        itemTax: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      })
+    ),
+    buyerName: PropTypes.string,
+    billName: PropTypes.string,
+    buyerTaxRegistrationId: PropTypes.string,
+    billAddress1: PropTypes.string,
+    billAddress2: PropTypes.string,
+    billAddress3: PropTypes.string,
+    billPostalCode: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    billCity: PropTypes.string,
+    billState: PropTypes.string,
+    billCountry: PropTypes.string,
+    buyerPhoneNumber: PropTypes.string,
+    buyerEmail: PropTypes.string,
+    recipientName: PropTypes.string,
+    purchaseOrderNumber: PropTypes.string,
+    shipAddress1: PropTypes.string,
+    shipAddress2: PropTypes.string,
+    shipAddress3: PropTypes.string,
+    shipPostalCode: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    shipCity: PropTypes.string,
+    shipState: PropTypes.string,
+    shipCountry: PropTypes.string,
+    shipPhoneNumber: PropTypes.string,
+    deliveryInstructions: PropTypes.string,
+  }).isRequired,
 };
 
 export default OrderInfo;

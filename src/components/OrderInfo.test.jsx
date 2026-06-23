@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/vitest";
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import OrderInfo from "./OrderInfo";
 
 const order = {
@@ -37,6 +37,24 @@ const order = {
 };
 
 describe("OrderInfo", () => {
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+  });
+
+  it("reports an invalid business order contract", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    render(<OrderInfo order={{ ...order, isBusinessOrder: "yes" }} />);
+
+    expect(consoleError).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      expect.stringContaining("isBusinessOrder"),
+      expect.any(String)
+    );
+  });
+
   it("mantiene el renderizado al desaparecer una dirección de facturación", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     const { rerender } = render(<OrderInfo order={order} />);
@@ -63,6 +81,6 @@ describe("OrderInfo", () => {
 
     expect(screen.getByText(/^Ana\s*$/)).toBeInTheDocument();
     expect(screen.getByText("600000")).toBeInTheDocument();
-    expect(screen.getAllByText("08001")).toHaveLength(2);
+    expect(screen.getAllByText("08001")).toHaveLength(1);
   });
 });
