@@ -1,9 +1,24 @@
 import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import OrderProducts from "./OrderProducts";
 
 describe("OrderProducts", () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  it("reports a missing order items contract", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    render(<OrderProducts order={{}} />);
+
+    expect(consoleError).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      expect.stringContaining("items"),
+      expect.any(String)
+    );
+  });
+
   it("renders totals with tax and shipping", () => {
     render(
       <OrderProducts

@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import ProductImage from "./ProductImage";
 import {
@@ -171,6 +171,16 @@ const OrderProducts = ({ order }) => {
       </tbody>
     </table>
   );
+};
+
+OrderProducts.propTypes = {
+  order: PropTypes.shape({
+    items: PropTypes.arrayOf(
+      PropTypes.shape({
+        itemTax: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      })
+    ).isRequired,
+  }).isRequired,
 };
 
 export default OrderProducts;
