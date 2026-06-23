@@ -95,7 +95,9 @@ const useOrderSwitches = ({ orders, setFilters, removeShipment }) => {
 
   return {
     switchStates,
+    setSwitchStates,
     shipSwitchCount,
+    isAnySwitchChecked: shipSwitchCount > 0,
     addressToFormat,
     clearAddressToFormat: () => setAddressToFormat(null),
     handleSwitchChange,

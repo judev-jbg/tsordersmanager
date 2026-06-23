@@ -14,6 +14,7 @@ import useScrollVisibility from "./hooks/useScrollVisibility";
 import useOrderResources from "./hooks/useOrderResources";
 import useShipmentActions from "./hooks/useShipmentActions";
 import useShipmentFlow from "./hooks/useShipmentFlow";
+import useOrderSwitches from "./hooks/useOrderSwitches";
 import { SESSION_CONFIG } from "./config/sessionConfig";
 import { findOrderForAction, getRevertedSwitchState } from "./utils/orderActions";
 import {
@@ -84,7 +85,6 @@ const TsOrdersApp = () => {
     },
   ];
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [switchStates, setSwitchStates] = useState({});
   const {
     filters: itemsFilter,
     orders,
@@ -93,14 +93,24 @@ const TsOrdersApp = () => {
     setFilters: setItemsFilter,
     setOrders,
   } = useOrderResources(ordersFilter);
-  const [addressToFormat, setAddressToFormat] = useState(null);
-  const formattedAddress = useAddressFormatter(addressToFormat);
   const getCountryCode = useCodCountry();
   const { createShipment, removeShipment } = useShipmentActions(getCountryCode);
+  const {
+    switchStates,
+    setSwitchStates,
+    shipSwitchCount,
+    isAnySwitchChecked,
+  } = useOrderSwitches({
+    orders,
+    setFilters: setItemsFilter,
+    removeShipment,
+  });
+  const [addressToFormat, setAddressToFormat] = useState(null);
+  const formattedAddress = useAddressFormatter(addressToFormat);
   const updateShipmentSwitch = useCallback(
     (id, value) =>
       setSwitchStates((currentStates) => ({ ...currentStates, [id]: value })),
-    []
+    [setSwitchStates]
   );
   const { submit: submitShipment } = useShipmentFlow(
     createShipment,
@@ -124,7 +134,7 @@ const TsOrdersApp = () => {
 
       setSwitchStates(initialSwitchStates);
     }
-  }, [orders]); // Este efecto se ejecuta cada vez que orders cambia
+  }, [orders, setSwitchStates]); // Este efecto se ejecuta cada vez que orders cambia
 
   useEffect(() => {
     // Solo procedemos si hay una dirección para formatear y ya tenemos la dirección formateada
@@ -272,15 +282,6 @@ const TsOrdersApp = () => {
       }
     }
   };
-
-  // Contar switches activos que empiezan con "ship-"
-  const shipSwitchCount = Object.keys(switchStates).filter(
-    (key) =>
-      key.startsWith("ship-") &&
-      (switchStates[key] === 1 || switchStates[key] === true)
-  ).length;
-
-  const isAnySwitchChecked = shipSwitchCount > 0;
 
   const handleUpButtonClick = () => {
     window.scroll(0, 0);
