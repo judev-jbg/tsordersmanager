@@ -1,7 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { validateOrderTableValue } from "../utils/orderTableRules";
 import { ORDER_TABLE_COLUMNS } from "../config/orderTableColumns";
 import useEditableCell from "../hooks/useEditableCell";
+
+const columns = ORDER_TABLE_COLUMNS;
+const validateInput = validateOrderTableValue;
 
 const OrdersTable = ({ data, onCellUpdate }) => {
   const {
@@ -15,7 +18,6 @@ const OrdersTable = ({ data, onCellUpdate }) => {
   const [cellValidationMap, setCellValidationMap] = useState({});
   const inputRef = useRef(null);
   const tableRef = useRef(null);
-  const columns = ORDER_TABLE_COLUMNS;
 
   // Validar todos los datos al cargar el componente
   useEffect(() => {
@@ -58,7 +60,7 @@ const OrdersTable = ({ data, onCellUpdate }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [editCell]);
+  }, [editCell, cancelEdit]);
 
   // Manejar doble clic en una celda
   const handleCellDoubleClick = (rowId, column, value) => {
@@ -70,10 +72,6 @@ const OrdersTable = ({ data, onCellUpdate }) => {
   };
 
   // Validar entrada según la columna
-  const validateInput = (column, value) => {
-    return validateOrderTableValue(column, value);
-  };
-
   // Manejar cambios en el input
   const handleInputChange = (e) => {
     const newValue = e.target.value;
