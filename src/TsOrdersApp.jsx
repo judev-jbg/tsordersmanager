@@ -16,6 +16,11 @@ import useShipmentActions from "./hooks/useShipmentActions";
 import useShipmentFlow from "./hooks/useShipmentFlow";
 import { SESSION_CONFIG } from "./config/sessionConfig";
 import { findOrderForAction, getRevertedSwitchState } from "./utils/orderActions";
+import {
+  buildFakeRequest,
+  buildStockRequest,
+  updateStockFilterCounters,
+} from "./utils/orderActionState";
 
 const TsOrdersApp = () => {
   // Session timeout (30 minutos)
@@ -413,10 +418,10 @@ const TsOrdersApp = () => {
       }
       // Manejar acción "stock"
       else if (actionSwitch === "stock") {
-        const requestBody = {
-          withoutstock: isChecked ? 1 : 0,
-          idOrder: targetOrder.amazonOrderId,
-        };
+        const requestBody = buildStockRequest(
+          targetOrder.amazonOrderId,
+          isChecked
+        );
 
         console.log(
           `Enviando solicitud PATCH para orden (withoutstock=${
@@ -432,34 +437,14 @@ const TsOrdersApp = () => {
         console.log("Respuesta de la API (PATCH) Stock:", response.data);
         if (response.data.message === "Registro actualizado") {
           // Actualizar los filtros con los nuevos contadores
-          setItemsFilter((prevFilters) => {
-            return prevFilters.map((filter) => {
-              let newCounter = filter.counter;
-
-              // El signo determina si sumamos o restamos basado en isChecked
-              const sign = isChecked ? -1 : 1;
-
-              if (filter.resource === "orderspending") {
-                newCounter += sign;
-              }
-              if (filter.resource === "ordersoutofstock") {
-                newCounter -= sign;
-              }
-
-              return {
-                ...filter,
-                counter: newCounter,
-              };
-            });
-          });
+          setItemsFilter((prevFilters) =>
+            updateStockFilterCounters(prevFilters, isChecked)
+          );
         }
       }
       // Manejar acción "fake"
       else if (actionSwitch === "fake") {
-        const requestBody = {
-          isFake: isChecked ? 1 : 0,
-          idOrder: targetOrder.amazonOrderId,
-        };
+        const requestBody = buildFakeRequest(targetOrder.amazonOrderId, isChecked);
 
         console.log(
           `Enviando solicitud PATCH para orden (isFake=${isChecked ? 1 : 0}):`,
