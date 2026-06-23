@@ -6,30 +6,21 @@ import Order from "./components/Order";
 import SearchBarModal from "./components/SearchBarModal";
 import OrderSkeleton from "./components/OrderSkeleton";
 import SearchNoResult from "./components/SearchNoResult";
+import { ORDER_FILTERS } from "./config/orderFilters";
+import { SESSION_CONFIG } from "./config/sessionConfig";
 import useAddressFormatter from "./hooks/useAddressFormatter";
 import useCodCountry from "./hooks/useCodCountry";
-import useSessionTimeout from "./hooks/useSessionTimeout";
-import useScrollVisibility from "./hooks/useScrollVisibility";
 import useOrderResources from "./hooks/useOrderResources";
+import useOrderSwitches from "./hooks/useOrderSwitches";
+import useScrollVisibility from "./hooks/useScrollVisibility";
+import useSessionTimeout from "./hooks/useSessionTimeout";
 import useShipmentActions from "./hooks/useShipmentActions";
 import useShipmentFlow from "./hooks/useShipmentFlow";
-import useOrderSwitches from "./hooks/useOrderSwitches";
-import { SESSION_CONFIG } from "./config/sessionConfig";
-
-const ordersFilter = [
-  { id: 1, resource: "orderspending", label: "Pendientes de envío", newBlock: false, counter: 0, active: true },
-  { id: 2, resource: "orderspending/untiltoday", label: "hoy", newBlock: false, counter: 0, active: false },
-  { id: 3, resource: "orderspending/delayed", label: "Vencidos", newBlock: false, counter: 0, active: false },
-  { id: 4, resource: "ordersoutofstock", label: "Pendientes de envío - Sin stock", newBlock: true, counter: 0, active: false },
-  { id: 5, resource: "ordersoutofstock/untiltoday", label: "hoy", newBlock: false, counter: 0, active: false },
-  { id: 6, resource: "ordersoutofstock/delayed", label: "Vencidos", newBlock: false, counter: 0, active: false },
-  { id: 7, resource: "ordersshipfake", label: "Envios fake", newBlock: true, counter: 0, active: false },
-];
 
 const TsOrdersApp = () => {
   useSessionTimeout(SESSION_CONFIG.TIMEOUT);
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const { filters: itemsFilter, orders, loading: isLoading, selectFilter: handleFilterClick, setFilters: setItemsFilter, setOrders } = useOrderResources(ordersFilter);
+  const { filters: itemsFilter, orders, loading: isLoading, selectFilter: handleFilterClick, setFilters: setItemsFilter, setOrders } = useOrderResources(ORDER_FILTERS);
   const getCountryCode = useCodCountry();
   const { createShipment, removeShipment } = useShipmentActions(getCountryCode);
   const { switchStates, setSwitchStates, shipSwitchCount, isAnySwitchChecked, addressToFormat, clearAddressToFormat, handleSwitchChange } = useOrderSwitches({ orders, setFilters: setItemsFilter, removeShipment });
@@ -39,9 +30,7 @@ const TsOrdersApp = () => {
   const showUpButton = useScrollVisibility(1500) ? "show" : "";
 
   useEffect(() => {
-    if (addressToFormat && formattedAddress) {
-      submitShipment(addressToFormat.targetOrder, formattedAddress).finally(clearAddressToFormat);
-    }
+    if (addressToFormat && formattedAddress) submitShipment(addressToFormat.targetOrder, formattedAddress).finally(clearAddressToFormat);
   }, [addressToFormat, clearAddressToFormat, formattedAddress, submitShipment]);
 
   const renderOrders = () => {
