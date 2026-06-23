@@ -15,7 +15,6 @@ export const useSessionTimeout = (timeout = DEFAULT_TIMEOUT) => {
     }
 
     timeoutRef.current = setTimeout(async () => {
-      console.log("Session timeout - logging out");
       await logout();
       navigate("/login");
     }, timeout);

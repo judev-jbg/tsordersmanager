@@ -24,7 +24,7 @@ const ProductImage = ({ referenciaProv, productName }) => {
           setImgSrc(imgProductDefault);
         }
       } catch (error) {
-        console.log("Error al cargar la imagen:", error);
+        console.error("Error al cargar la imagen:", error);
         setImgSrc(imgProductDefault);
       }
     };
