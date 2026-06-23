@@ -109,54 +109,6 @@ const TsOrdersApp = () => {
   const showUpButton = useScrollVisibility(1500) ? "show" : "";
 
   // Función para obtener todas las órdenes de todos los recursos
-  /*
-  const fetchAllOrders = async () => {
-    try {
-      setIsLoading(true); // Indicamos que estamos cargando
-      console.log("Obteniendo todas las órdenes...");
-      // Crear un array de promesas para todas las peticiones
-      const endpoints = [
-        "/orderspending",
-        "/orderspending/untiltoday",
-        "/orderspending/delayed",
-        "/ordersoutofstock",
-        "/ordersoutofstock/untiltoday",
-        "/ordersoutofstock/delayed",
-        "/ordersshipfake",
-      ];
-
-      const promises = endpoints.map((endpoint) => api.get(endpoint));
-      const responses = await Promise.all(promises);
-
-      // Crear un objeto con todas las respuestas por recurso
-      const ordersMap = {};
-      responses.forEach((response, index) => {
-        ordersMap[endpoints[index].replace("/", "")] = response.data;
-      });
-
-      // Actualizar los contadores de los filtros
-      updateFilterCounters(responses);
-
-      // Establecer las órdenes del recurso activo
-      const activeOrders = responses.find(
-        (response) => response.data.header.resource === activeResource
-      );
-
-      if (activeOrders) {
-        setOrders([activeOrders.data]);
-      } else if (responses.length > 0) {
-        // Si no se encuentra el recurso activo, usar el primero
-        setOrders([responses[0].data]);
-        setActiveResource(responses[0].data.header.resource);
-      }
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error al obtener todas las órdenes: ", error);
-      setIsLoading(false);
-    }
-  };
-
-  */
   // Cargar datos al montar el componente
   useEffect(() => {
     // Solo proceder si hay órdenes disponibles
@@ -185,164 +137,8 @@ const TsOrdersApp = () => {
   }, [addressToFormat, formattedAddress, submitShipment]);
 
   // Función para manejar el clic en un filtro
-  /*
-  const legacyHandleFilterClick = async (filterId) => {
-    // Actualizar el filtro activo
-    const updatedFilters = itemsFilter.map((filter) => ({
-      ...filter,
-      active: filter.id === filterId,
-    }));
-
-    setItemsFilter(updatedFilters);
-
-    // Obtener el recurso del filtro seleccionado
-    const selectedFilter = itemsFilter.find((filter) => filter.id === filterId);
-
-    if (selectedFilter) {
-      setIsLoading(true);
-
-      // Hacer una petición inmediata para el recurso seleccionado
-      // para mostrar rápidamente estos datos mientras se cargan todos
-      try {
-        const response = await api.get(`/${selectedFilter.resource}`);
-        // console.log(`Solicitud de ordenes a /${selectedFilter.resource}`);
-        setOrders([response.data]);
-        legacyUpdateFilterCounters(response);
-        setIsLoading(false);
-      } catch (error) {
-        console.error(
-          `Error al obtener órdenes para ${selectedFilter.resource}:`,
-          error
-        );
-        setIsLoading(false);
-      }
-    }
-  };
-
-  // Función para actualizar los contadores de los filtros
-  const legacyUpdateFilterCounters = (responses) => {
-    // Crear un mapa de recursos a contadores
-    const resourceCountMap = {};
-
-    if (Array.isArray(responses)) {
-      responses.forEach((response) => {
-        if (response.data.header && response.data.header.resource) {
-          resourceCountMap[response.data.header.resource] =
-            response.data.header.count;
-        }
-      });
-    } else {
-      if (responses.data.header && responses.data.header.resource) {
-        resourceCountMap[responses.data.header.resource] =
-          responses.data.header.count;
-      }
-    }
-
-    // Actualizar los filtros con los nuevos contadores
-    setItemsFilter((prevFilters) => {
-      return prevFilters.map((filter) => {
-        const hasResource = Object.prototype.hasOwnProperty.call(
-          resourceCountMap,
-          filter.resource
-        );
-        const count = hasResource
-          ? resourceCountMap[filter.resource]
-          : filter.counter;
-        return {
-          ...filter,
-          counter: count,
-        };
-      });
-    });
-  };
-
-  */
   const handlerModalSearch = () => {
     setIsOpenModal(!isOpenModal);
-  };
-
-  const continueWithShipmentRequest = async (targetOrder, formattedAddress) => {
-    try {
-      // Obtener el codigo del país
-      const countryName = getCountryCode(targetOrder.shipCountry);
-
-      // Construir el cuerpo de la solicitud
-      const requestBody = {
-        servicio: 37,
-        horario: 3,
-        destinatario:
-          targetOrder.recipientName.replace(
-            "PO" + targetOrder.purchaseOrderNumber,
-            ""
-          ) || "",
-        direccion: formattedAddress,
-        pais: countryName || targetOrder.shipCountry,
-        cp: targetOrder.shipPostalCode || "",
-        poblacion: targetOrder.shipCity || "",
-        telefono:
-          targetOrder.shipPhoneNumber
-            .replace(" ", "")
-            .replace(".0", "")
-            .replace("+34", "")
-            .replace("+34-", "") ||
-          targetOrder.buyerPhoneNumber
-            .replace(" ", "")
-            .replace(".0", "")
-            .replace("+34", "")
-            .replace("+34-", "") ||
-          663142955,
-        email: "orders@toolstock.info",
-        departamento: targetOrder.amazonOrderId || "",
-        contacto:
-          targetOrder.recipientName.replace(
-            "PO" + targetOrder.purchaseOrderNumber,
-            ""
-          ) || "",
-        observaciones: targetOrder.deliveryInstructions || "",
-        bultos: 1,
-        movil:
-          targetOrder.shipPhoneNumber
-            .replace(" ", "")
-            .replace(".0", "")
-            .replace("+34", "")
-            .replace("+34-", "") ||
-          targetOrder.buyerPhoneNumber
-            .replace(" ", "")
-            .replace(".0", "")
-            .replace("+34", "")
-            .replace("+34-", "") ||
-          663142955,
-        refC: targetOrder.purchaseOrderNumber || "",
-        num_pedido_ahora: targetOrder.num_order_ahora || null,
-        idOrder: targetOrder.amazonOrderId || "",
-        process: "isFile",
-        value: 1,
-        shipmentType: "usingFile",
-      };
-
-      console.log("Enviando solicitud para orden:", targetOrder.amazonOrderId);
-      console.log("Cuerpo de la solicitud:", requestBody);
-
-      // Realizar la solicitud POST
-      const created = await createShipment(targetOrder, formattedAddress);
-      if (!created) throw new Error("Could not create shipment");
-
-      // Limpiar el estado después de completar la solicitud
-      setAddressToFormat(null);
-    } catch (error) {
-      console.error("Error al enviar la orden para despacho:", error);
-
-      // Revertir el cambio del switch en caso de error
-      if (targetOrder && targetOrder.amazonOrderId) {
-        setSwitchStates((prevStates) => ({
-          ...prevStates,
-          [`ship-${targetOrder.amazonOrderId}`]: 0,
-        }));
-      }
-
-      // Limpiar el estado de dirección
-      setAddressToFormat(null);
-    }
   };
 
   const handleSwitchChange = async (id, isChecked, actionSwitch) => {
@@ -458,8 +254,6 @@ const TsOrdersApp = () => {
         console.log("Respuesta de la API (PATCH) isFake:", response.data);
       }
 
-      // Actualizar los datos después de cambios exitosos
-      // fetchAllOrders();
     } catch (error) {
       console.error(
         `Error al procesar la acción ${actionSwitch} para la orden:`,
