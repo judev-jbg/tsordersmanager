@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 const ShipmentsTable = ({ data, onExportClick }) => {
   // Definición de columnas y sus propiedades
@@ -68,7 +68,7 @@ const ShipmentsTable = ({ data, onExportClick }) => {
     return column.id === "accion" ? (
       <span>
         {row.shippingMethod === "isWS" ? (
-          <button className="button button-export button-disabled">
+          <button className="button button-export button-disabled" disabled>
             Exportar ↓
           </button>
         ) : (
@@ -114,6 +114,17 @@ const ShipmentsTable = ({ data, onExportClick }) => {
       </div>
     </div>
   );
+};
+
+ShipmentsTable.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      shippingMethod: PropTypes.oneOf(["isFile", "isWS"]).isRequired,
+      fileGenerateName: PropTypes.string,
+      updateDateTime: PropTypes.string,
+    })
+  ).isRequired,
+  onExportClick: PropTypes.func.isRequired,
 };
 
 export default ShipmentsTable;
