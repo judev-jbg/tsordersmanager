@@ -1,11 +1,7 @@
-import React from "react";
+import PropTypes from "prop-types";
 import searchNoResultSvg from "../assets/img/search-no-result.svg";
 
-const SearchNoResult = ({
-  width = "200px",
-  height = "200px",
-  className = "",
-}) => {
+const SearchNoResult = ({ className = "" }) => {
   return (
     <div className={`no-results-container ${className}`}>
       <figure className={`no-results-img ${className}`}>
@@ -19,6 +15,10 @@ const SearchNoResult = ({
       <p>No se encontraron órdenes para este filtro</p>
     </div>
   );
+};
+
+SearchNoResult.propTypes = {
+  className: PropTypes.string,
 };
 
 export default SearchNoResult;
