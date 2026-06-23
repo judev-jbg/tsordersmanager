@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import PropTypes from "prop-types";
 import { validateOrderTableValue } from "../utils/orderTableRules";
 import { ORDER_TABLE_COLUMNS } from "../config/orderTableColumns";
 import useEditableCell from "../hooks/useEditableCell";
@@ -179,6 +180,11 @@ const OrdersTable = ({ data, onCellUpdate }) => {
       </div>
     </div>
   );
+};
+
+OrdersTable.propTypes = {
+  data: PropTypes.array.isRequired,
+  onCellUpdate: PropTypes.func.isRequired,
 };
 
 export default OrdersTable;
