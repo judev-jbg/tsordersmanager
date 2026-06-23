@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ordersService from "./services/ordersService";
 import ToastNotifier from "./components/ToastNotifier";
@@ -6,6 +6,7 @@ import ShipmentsTable from "./components/ShipmentsTable";
 import ImageWithOutOrders from "./components/ImageWithOutOrders";
 import useToast from "./hooks/useToast";
 import { exportToExcel } from "./utils/excelUtils";
+import useInitialLoad from "./hooks/useInitialLoad";
 
 /**
  * Componente OrdersShipmentsHistory - REFACTORIZADO
@@ -19,10 +20,6 @@ const OrdersShipmentsHistory = () => {
   const [loading, setLoading] = useState(true);
 
   // Obtener lista de env铆os al cargar la p谩gina
-  useEffect(() => {
-    fetchShipments();
-  }, []);
-
   const fetchShipments = async () => {
     try {
       setLoading(true);
@@ -40,6 +37,8 @@ const OrdersShipmentsHistory = () => {
       setLoading(false);
     }
   };
+
+  useInitialLoad(fetchShipments);
 
   // Funci贸n para procesar la descarga de un archivo de env铆o
   const handleShipmentProcess = async (nameFile) => {

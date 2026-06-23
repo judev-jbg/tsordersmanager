@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./OrdersToShip.css";
 import { useNavigate } from "react-router-dom";
 import api from "./services/api";
@@ -9,6 +9,7 @@ import ImageWithOutOrders from "./components/ImageWithOutOrders";
 import useToast from "./hooks/useToast";
 import { exportToExcel } from "./utils/excelUtils";
 import { updateOrderCell } from "./utils/orderUtils";
+import useInitialLoad from "./hooks/useInitialLoad";
 
 /**
  * Componente OrdersToShip - REFACTORIZADO
@@ -23,10 +24,6 @@ const OrdersToShip = () => {
   const [loading, setLoading] = useState(true);
 
   // Obtener 贸rdenes listas para enviar al cargar la p谩gina
-  useEffect(() => {
-    fetchOrdersToShip();
-  }, []);
-
   const fetchOrdersToShip = async () => {
     try {
       setLoading(true);
@@ -44,6 +41,8 @@ const OrdersToShip = () => {
       setLoading(false);
     }
   };
+
+  useInitialLoad(fetchOrdersToShip);
 
   // Funci贸n para actualizar el valor de una celda
   const handleCellUpdate = async (rowId, columnName, columnValue) => {
