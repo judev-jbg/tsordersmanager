@@ -1,6 +1,6 @@
+import PropTypes from "prop-types";
 import Filter from "./Filter";
 
-// eslint-disable-next-line react/prop-types
 const Filters = ({ filters, onFilterClick }) => {
   return (
     <div className="filters">
@@ -19,6 +19,19 @@ const Filters = ({ filters, onFilterClick }) => {
       </div>
     </div>
   );
+};
+
+Filters.propTypes = {
+  filters: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      label: PropTypes.string.isRequired,
+      counter: PropTypes.number,
+      newBlock: PropTypes.bool,
+      active: PropTypes.bool,
+    })
+  ).isRequired,
+  onFilterClick: PropTypes.func.isRequired,
 };
 
 export default Filters;

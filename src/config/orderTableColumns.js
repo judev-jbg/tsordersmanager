@@ -1,0 +1,17 @@
+export const ORDER_TABLE_COLUMNS = [
+  { id: "servicio", label: "Servicio", editable: false },
+  { id: "horario", label: "Horario", editable: false },
+  { id: "destinatario", label: "Destinatario", editable: true, maxLength: 40 },
+  { id: "direccion", label: "Dirección", editable: true, maxLength: 80 },
+  { id: "pais", label: "País", editable: false },
+  { id: "cp", label: "CP", editable: true, maxLength: 10 },
+  { id: "poblacion", label: "Población", editable: true, maxLength: 80 },
+  { id: "telefono", label: "Teléfono", editable: true, maxLength: 15 },
+  { id: "email", label: "Email", editable: true, maxLength: 255 },
+  { id: "departamento", label: "Departamento", editable: true, maxLength: 40 },
+  { id: "contacto", label: "Contacto", editable: true, maxLength: 40 },
+  { id: "observaciones", label: "Observaciones", editable: true, maxLength: 98 },
+  { id: "movil", label: "Móvil", editable: true, maxLength: 15 },
+  { id: "refC", label: "RefC", editable: true, maxLength: 14 },
+  { id: "num_pedido_ahora", label: "Número de pedido", editable: true, maxLength: 14 },
+];

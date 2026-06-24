@@ -1,9 +1,15 @@
+import PropTypes from "prop-types";
 import Switch from "./Switch";
 import TagLine from "./TagLine";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 
-// eslint-disable-next-line react/prop-types
-const OrderHeader = ({ order, onSwitchChange }) => {
+const OrderHeader = ({ order, onSwitchChange, switchStates = {} }) => {
+  const stockChecked =
+    switchStates[`stock-${order.amazonOrderId}`] ?? order.pendingWithoutStock;
+  const shipChecked =
+    switchStates[`ship-${order.amazonOrderId}`] ?? order.markForShipment;
+  const fakeChecked =
+    switchStates[`fake-${order.amazonOrderId}`] ?? order.isShipFake;
   const handleSwitchChange = (id, isChecked, actionSwitch) => {
     onSwitchChange(id, isChecked, actionSwitch);
   };
@@ -39,10 +45,9 @@ const OrderHeader = ({ order, onSwitchChange }) => {
         </span>
         <span className="row-data-group separator">
           <Switch
-            label="Sin stock" // eslint-disable-next-line react/prop-types
-            checked={order.pendingWithoutStock}
+            label="Sin stock"
+            checked={stockChecked}
             onChange={handleSwitchChange}
-            // eslint-disable-next-line react/prop-types
             id={`stock-${order.amazonOrderId}`}
             action="stock"
           />
@@ -50,22 +55,18 @@ const OrderHeader = ({ order, onSwitchChange }) => {
         <span className="row-data-group separator">
           <Switch
             label="Seleccionar para enviar"
-            // eslint-disable-next-line react/prop-types
-            checked={order.markForShipment}
+            checked={shipChecked}
             onChange={handleSwitchChange}
-            // eslint-disable-next-line react/prop-types
             id={`ship-${order.amazonOrderId}`}
             action="ship"
           />
         </span>
-        {order.pendingWithoutStock === 1 ? (
+        {stockChecked ? (
           <span className="row-data-group separator">
             <Switch
               label="Envio Fake"
-              // eslint-disable-next-line react/prop-types
-              checked={order.isShipFake}
+              checked={fakeChecked}
               onChange={handleSwitchChange}
-              // eslint-disable-next-line react/prop-types
               id={`fake-${order.amazonOrderId}`}
               action="fake"
             />
@@ -123,6 +124,24 @@ const OrderHeader = ({ order, onSwitchChange }) => {
       </span>
     </div>
   );
+};
+
+OrderHeader.propTypes = {
+  order: PropTypes.shape({
+    amazonOrderId: PropTypes.string.isRequired,
+    pendingWithoutStock: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+    markForShipment: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+    isShipFake: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+    num_order_ahora: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    reference_ps: PropTypes.string,
+    orderStatus: PropTypes.string,
+    qOrders: PropTypes.number,
+    qOrderShip: PropTypes.number,
+    expeditionTraking: PropTypes.string,
+    shipPostalCode: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  }).isRequired,
+  onSwitchChange: PropTypes.func.isRequired,
+  switchStates: PropTypes.object,
 };
 
 export default OrderHeader;

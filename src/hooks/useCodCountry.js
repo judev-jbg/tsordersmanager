@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 const useCodCountry = () => {
   const countries = useMemo(
     () => ({
@@ -38,13 +38,13 @@ const useCodCountry = () => {
   );
 
   // La función que retorna el hook
-  const getCountryCode = (countryCod) => {
+  const getCountryCode = useCallback((countryCod) => {
     if (countries[countryCod]) {
       return countries[countryCod];
     } else {
       return "País no encontrado: " + countryCod;
     }
-  };
+  }, [countries]);
 
   return getCountryCode;
 };

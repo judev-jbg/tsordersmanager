@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoCloseOutline } from "react-icons/io5";
+import PropTypes from "prop-types";
 import api from "../services/api";
 
-// eslint-disable-next-line react/prop-types
 export default function SearchBarModal({
   open,
   close,
@@ -24,7 +24,7 @@ export default function SearchBarModal({
       const response = await api.get(`/order/${search}`);
 
       // Asignar la respuesta a orders en TsOrdersApp
-      setOrders([response.data]);
+      setOrders(response.data.payload || []);
 
       // Desactivar todos los filtros
       setItemsFilter((prevFilters) =>
@@ -86,3 +86,10 @@ export default function SearchBarModal({
     </div>
   );
 }
+
+SearchBarModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  close: PropTypes.func.isRequired,
+  setOrders: PropTypes.func.isRequired,
+  setItemsFilter: PropTypes.func.isRequired,
+};

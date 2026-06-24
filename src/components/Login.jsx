@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import { useAuthContext } from "../context/AuthContext";
 import useToast from "../hooks/useToast";
 import ToastNotifier from "./ToastNotifier";
 import "./Login.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, loading } = useAuth();
+  const { login, loading } = useAuthContext();
   const { toast, showToast } = useToast();
   const [credentials, setCredentials] = useState({
     username: "",
@@ -25,28 +25,21 @@ const Login = () => {
     e.preventDefault();
     e.stopPropagation();
 
-    console.log("Form submitted");
-
     if (!credentials.username || !credentials.password) {
       showToast("Por favor, completa todos los campos", "error");
       return;
     }
 
     try {
-      console.log("Attempting login...");
       const result = await login(credentials.username, credentials.password);
-      console.log("Login result:", result);
 
       if (result.success) {
-        console.log("Login successful, showing toast and navigating...");
         showToast("Inicio de sesion exitoso", "success");
         // Delay para asegurar que el estado se actualiza
         setTimeout(() => {
-          console.log("Navigating to /");
           navigate("/", { replace: true });
         }, 200);
       } else {
-        console.log("Login failed:", result.error);
         // Mostrar error y limpiar solo el campo de password
         showToast(result.error || "Credenciales invalidas", "error");
         setCredentials({

@@ -1,6 +1,10 @@
-import React from "react";
+import PropTypes from "prop-types";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import ProductImage from "./ProductImage";
+import {
+  calculateOrderTotal,
+  calculateProductTotals,
+} from "../utils/orderProductTotals";
 
 const OrderProducts = ({ order }) => {
   const copyToClipboard = useCopyToClipboard();
@@ -10,15 +14,7 @@ const OrderProducts = ({ order }) => {
   // Verificamos que order.items existe y es un array
   const items = order?.items || [];
 
-  // Calculamos el total de todo el pedido
-  const calculateOrderTotal = () => {
-    let total = 0;
-    items.forEach((item) => {
-      // Sumamos precio con impuestos multiplicado por cantidad
-      total += parseFloat(item.itemPrice) + parseFloat(item.shippingPrice);
-    });
-    return total.toFixed(2);
-  };
+  const orderTotal = calculateOrderTotal(items).toFixed(2);
 
   return (
     <table className="w-full">
@@ -37,35 +33,19 @@ const OrderProducts = ({ order }) => {
       <tbody>
         {/* Renderizar productos desde aqui */}
         {items.map((item) => {
-          // Calculamos importes
           const cantidadComprada = item.quantityPurchased;
-          const precioUnidadSinIVA =
-            parseFloat(item.vatExclusiveItemPrice) /
-            parseFloat(item.quantityPurchased);
-          const precioUnidadConIVA =
-            parseFloat(item.itemTax) === 0
-              ? parseFloat(item.vatExclusiveItemPrice) /
-                parseFloat(item.quantityPurchased)
-              : parseFloat(item.vatExclusiveItemPrice) /
-                  parseFloat(item.quantityPurchased) +
-                parseFloat(item.itemTax) / parseFloat(item.quantityPurchased);
-          const subTotalProducto = parseFloat(item.itemPrice);
-
-          const productoSoloIVA = parseFloat(item.itemTax);
-          const productoSinIVA = (subTotalProducto - productoSoloIVA).toFixed(
-            2
-          );
-
-          const envio = parseFloat(item.shippingPrice);
-          const envioSinIVA =
-            parseFloat(item.shippingPrice || 0) -
-            parseFloat(item.shippingTax || 0);
-          const envioSoloIVA = parseFloat(item.shippingTax || 0);
-
-          // Totales
-          const totalConIVA = subTotalProducto + envio;
-          const totalSinIVA = totalConIVA - (productoSoloIVA + envioSoloIVA);
-          const totalIVA = productoSoloIVA + envioSoloIVA;
+          const totals = calculateProductTotals(item);
+          const precioUnidadSinIVA = totals.unitWithoutTax;
+          const precioUnidadConIVA = totals.unitWithTax;
+          const subTotalProducto = Number.parseFloat(item.itemPrice) || 0;
+          const productoSoloIVA = Number.parseFloat(item.itemTax) || 0;
+          const productoSinIVA = totals.productWithoutTax.toFixed(2);
+          const envio = Number.parseFloat(item.shippingPrice) || 0;
+          const envioSinIVA = totals.shippingWithoutTax;
+          const envioSoloIVA = Number.parseFloat(item.shippingTax) || 0;
+          const totalConIVA = totals.totalWithTax;
+          const totalSinIVA = totals.totalWithoutTax;
+          const totalIVA = totals.totalTax;
 
           return (
             <tr key={item.orderItemId}>
@@ -185,12 +165,22 @@ const OrderProducts = ({ order }) => {
         {/* Renderizar productos hasta aqui */}
         <tr>
           <td colSpan="8" className="text-right border-l border-r order-total">
-            TOTAL DEL PEDIDO: {calculateOrderTotal()}€
+            TOTAL DEL PEDIDO: {orderTotal}€
           </td>
         </tr>
       </tbody>
     </table>
   );
+};
+
+OrderProducts.propTypes = {
+  order: PropTypes.shape({
+    items: PropTypes.arrayOf(
+      PropTypes.shape({
+        itemTax: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      })
+    ).isRequired,
+  }).isRequired,
 };
 
 export default OrderProducts;

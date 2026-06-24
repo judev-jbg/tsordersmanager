@@ -1,52 +1,24 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
+import PropTypes from "prop-types";
+import { validateOrderTableValue } from "../utils/orderTableRules";
+import { ORDER_TABLE_COLUMNS } from "../config/orderTableColumns";
+import useEditableCell from "../hooks/useEditableCell";
+
+const columns = ORDER_TABLE_COLUMNS;
+const validateInput = validateOrderTableValue;
 
 const OrdersTable = ({ data, onCellUpdate }) => {
-  const [editCell, setEditCell] = useState({
-    rowId: null,
-    column: null,
-    value: "",
-    originalValue: "",
-  });
-  const [validationStatus, setValidationStatus] = useState(true);
+  const {
+    cell: editCell,
+    isValid: validationStatus,
+    open: openEdit,
+    change: changeEdit,
+    cancel: cancelEdit,
+    save: saveEdit,
+  } = useEditableCell(onCellUpdate);
   const [cellValidationMap, setCellValidationMap] = useState({});
   const inputRef = useRef(null);
   const tableRef = useRef(null);
-
-  // Definición de columnas y sus propiedades
-  const columns = [
-    { id: "servicio", label: "Servicio", editable: false },
-    { id: "horario", label: "Horario", editable: false },
-    {
-      id: "destinatario",
-      label: "Destinatario",
-      editable: true,
-      maxLength: 40,
-    },
-    { id: "direccion", label: "Dirección", editable: true, maxLength: 80 },
-    { id: "pais", label: "País", editable: false },
-    { id: "cp", label: "CP", editable: true, maxLength: 10 },
-    { id: "poblacion", label: "Población", editable: true, maxLength: 80 },
-    { id: "telefono", label: "Teléfono", editable: true, maxLength: 15 },
-    { id: "email", label: "Email", editable: true, maxLength: 255 },
-    {
-      id: "departamento",
-      label: "Departamento",
-      editable: true,
-      maxLength: 40,
-    },
-    { id: "contacto", label: "Contacto", editable: true, maxLength: 40 },
-    {
-      id: "observaciones",
-      label: "Observaciones",
-      editable: true,
-      maxLength: 98,
-    },
-    // { id: "bultos", label: "Bultos", editable: false },
-    // { id: "peso", label: "Peso", editable: false },
-    { id: "movil", label: "Móvil", editable: true, maxLength: 15 },
-    { id: "refC", label: "RefC", editable: true, maxLength: 14 },
-        { id: "num_pedido_ahora", label: "Número de pedido", editable: true, maxLength: 14 },
-  ];
 
   // Validar todos los datos al cargar el componente
   useEffect(() => {
@@ -89,61 +61,22 @@ const OrdersTable = ({ data, onCellUpdate }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [editCell]);
+  }, [editCell, cancelEdit]);
 
   // Manejar doble clic en una celda
   const handleCellDoubleClick = (rowId, column, value) => {
     // Solo permitir edición en columnas editables
     const columnDef = columns.find((col) => col.id === column);
     if (columnDef && columnDef.editable) {
-      setEditCell({
-        rowId,
-        column,
-        value: value || "",
-        originalValue: value || "",
-      });
-      // Validar el valor actual
-      const isValid = validateInput(column, value);
-      setValidationStatus(isValid);
+      openEdit(rowId, column, value);
     }
   };
 
   // Validar entrada según la columna
-  const validateInput = (column, value) => {
-    const columnDef = columns.find((col) => col.id === column);
-    if (!columnDef) return true;
-
-    // Verificar longitud máxima
-    if (columnDef.maxLength && value.length > columnDef.maxLength) {
-      console.log("No cumple la logitud");
-      return false;
-    }
-
-    // Aquí puedes añadir más validaciones específicas por columna si es necesario
-    switch (column) {
-      case "telefono":
-      case "movil":
-        // Solo permitir números y algunos caracteres especiales
-        return /^[0-9+\-\s]*$/.test(value);
-      case "cp":
-        // Permitir alfanuméricos y guiones para códigos postales internacionales
-        return /^[0-9a-zA-Z\-\s]*$/.test(value);
-      default:
-        return true;
-    }
-  };
-
   // Manejar cambios en el input
   const handleInputChange = (e) => {
     const newValue = e.target.value;
-    setEditCell((prev) => ({
-      ...prev,
-      value: newValue,
-    }));
-
-    // Validar el nuevo valor
-    const isValid = validateInput(editCell.column, newValue);
-    setValidationStatus(isValid);
+    changeEdit(newValue);
   };
 
   // Manejar teclas (Enter para guardar, Escape para cancelar)
@@ -158,27 +91,6 @@ const OrdersTable = ({ data, onCellUpdate }) => {
         // Si hay cambios y son válidos, guardar
         await saveEdit();
       }
-    }
-  };
-
-  // Cancelar la edición
-  const cancelEdit = () => {
-    setEditCell({ rowId: null, column: null, value: "", originalValue: "" });
-    setValidationStatus(true);
-  };
-
-  // Guardar la edición
-  const saveEdit = async () => {
-    if (!validationStatus) return;
-
-    const success = await onCellUpdate(
-      editCell.rowId,
-      columns.find((col) => col.id === editCell.column)?.id || editCell.column,
-      editCell.value
-    );
-
-    if (success) {
-      cancelEdit();
     }
   };
 
@@ -268,6 +180,11 @@ const OrdersTable = ({ data, onCellUpdate }) => {
       </div>
     </div>
   );
+};
+
+OrdersTable.propTypes = {
+  data: PropTypes.array.isRequired,
+  onCellUpdate: PropTypes.func.isRequired,
 };
 
 export default OrdersTable;

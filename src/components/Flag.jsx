@@ -1,6 +1,6 @@
 import useFetchFlag from "../hooks/useFetchFlag";
+import PropTypes from "prop-types";
 
-// eslint-disable-next-line react/prop-types
 const Flag = ({ channel }) => {
   const flagImage = useFetchFlag(channel);
 
@@ -10,5 +10,7 @@ const Flag = ({ channel }) => {
     </figure>
   );
 };
+
+Flag.propTypes = { channel: PropTypes.string };
 
 export default Flag;

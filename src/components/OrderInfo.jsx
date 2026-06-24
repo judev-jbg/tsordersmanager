@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import TagRadius from "./TagRadius";
 import Flag from "./Flag";
 import Witness from "./Witness";
@@ -6,6 +7,11 @@ import useFormatDate from "../hooks/useFormatDate";
 import useIsOutOfTime from "../hooks/useIsOutOfTime";
 import useAddressFormatter from "../hooks/useAddressFormatter";
 import useCountry from "../hooks/useCountry";
+import {
+  formatPostalCode,
+  formatRecipient,
+  normalizePhone,
+} from "../utils/orderDisplay";
 
 const OrderInfo = ({ order }) => {
   const {
@@ -39,6 +45,9 @@ const OrderInfo = ({ order }) => {
     billState,
   };
   const getCountryName = useCountry();
+  const billingAddress = useAddressFormatter(addressBillData);
+  const shippingAddress = useAddressFormatter(addressShipData);
+
   return (
     <div className="order-info">
       <div className="order-info-sumary">
@@ -118,7 +127,7 @@ const OrderInfo = ({ order }) => {
 
         {order.billAddress1 && (
           <Label
-            text={useAddressFormatter(addressBillData)}
+            text={billingAddress}
             tooltipText="Dirección"
             positionTooltip="left"
             needSplit={false}
@@ -143,11 +152,7 @@ const OrderInfo = ({ order }) => {
         )}
         {order.billPostalCode && (
           <Label
-            text={
-              order.billPostalCode && order.billPostalCode.length === 4
-                ? `0${order.billPostalCode}`
-                : order.billPostalCode
-            }
+            text={formatPostalCode(order.billPostalCode)}
             tooltipText="Provincia"
             positionTooltip="left"
             needSplit={false}
@@ -164,12 +169,7 @@ const OrderInfo = ({ order }) => {
 
         {order.buyerPhoneNumber && (
           <Label
-            // eslint-disable-next-line react/prop-types
-            text={order.buyerPhoneNumber
-              .replace(" ", "")
-              .replace(".0", "")
-              .replace("+34", "")
-              .replace("+34-", "")}
+            text={normalizePhone(order.buyerPhoneNumber)}
             tooltipText="Teléfono"
             positionTooltip="left"
             needSplit={false}
@@ -189,9 +189,9 @@ const OrderInfo = ({ order }) => {
 
         {order.purchaseOrderNumber ? (
           <Label
-            text={order.recipientName.replace(
-              "PO" + order.purchaseOrderNumber,
-              ""
+            text={formatRecipient(
+              order.recipientName,
+              order.purchaseOrderNumber
             )}
             tooltipText="Destinatario"
             positionTooltip="left"
@@ -207,7 +207,7 @@ const OrderInfo = ({ order }) => {
         )}
 
         <Label
-          text={useAddressFormatter(addressShipData)}
+          text={shippingAddress}
           tooltipText="Dirección"
           positionTooltip="left"
           needSplit={false}
@@ -231,11 +231,7 @@ const OrderInfo = ({ order }) => {
         )}
 
         <Label
-          text={
-            order.shipPostalCode && order.shipPostalCode.length === 4
-              ? `0${order.shipPostalCode}`
-              : order.shipPostalCode
-          }
+          text={formatPostalCode(order.shipPostalCode)}
           tooltipText="Codigo Postal"
           positionTooltip="left"
           needSplit={false}
@@ -248,12 +244,7 @@ const OrderInfo = ({ order }) => {
         />
         {order.shipPhoneNumber && (
           <Label
-            // eslint-disable-next-line react/prop-types
-            text={order.shipPhoneNumber
-              .replace(" ", "")
-              .replace(".0", "")
-              .replace("+34", "")
-              .replace("+34-", "")}
+            text={normalizePhone(order.shipPhoneNumber)}
             tooltipText="Teléfono"
             positionTooltip="left"
             needSplit={false}
@@ -292,6 +283,45 @@ const OrderInfo = ({ order }) => {
       </div>
     </div>
   );
+};
+
+OrderInfo.propTypes = {
+  order: PropTypes.shape({
+    amazonOrderId: PropTypes.string,
+    salesChannel: PropTypes.string,
+    purchaseDate: PropTypes.string,
+    latestShipDate: PropTypes.string,
+    latestDeliveryDate: PropTypes.string,
+    isBusinessOrder: PropTypes.oneOf([0, 1]),
+    items: PropTypes.arrayOf(
+      PropTypes.shape({
+        itemTax: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      })
+    ),
+    buyerName: PropTypes.string,
+    billName: PropTypes.string,
+    buyerTaxRegistrationId: PropTypes.string,
+    billAddress1: PropTypes.string,
+    billAddress2: PropTypes.string,
+    billAddress3: PropTypes.string,
+    billPostalCode: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    billCity: PropTypes.string,
+    billState: PropTypes.string,
+    billCountry: PropTypes.string,
+    buyerPhoneNumber: PropTypes.string,
+    buyerEmail: PropTypes.string,
+    recipientName: PropTypes.string,
+    purchaseOrderNumber: PropTypes.string,
+    shipAddress1: PropTypes.string,
+    shipAddress2: PropTypes.string,
+    shipAddress3: PropTypes.string,
+    shipPostalCode: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    shipCity: PropTypes.string,
+    shipState: PropTypes.string,
+    shipCountry: PropTypes.string,
+    shipPhoneNumber: PropTypes.string,
+    deliveryInstructions: PropTypes.string,
+  }).isRequired,
 };
 
 export default OrderInfo;

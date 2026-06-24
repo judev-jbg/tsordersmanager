@@ -1,10 +1,7 @@
+import PropTypes from "prop-types";
 import emptyOrdersReadyToShip from "../assets/img/search-no-result.svg";
 
-const ImageWithOutOrders = ({
-  width = "200px",
-  height = "200px",
-  className = "",
-}) => {
+const ImageWithOutOrders = ({ className = "" }) => {
   return (
     <div className={`no-results-container ${className}`}>
       <figure className={`no-results-img ${className}`}>
@@ -18,6 +15,10 @@ const ImageWithOutOrders = ({
       <p>No hay órdenes listas para enviar</p>
     </div>
   );
+};
+
+ImageWithOutOrders.propTypes = {
+  className: PropTypes.string,
 };
 
 export default ImageWithOutOrders;

@@ -1,4 +1,5 @@
-// eslint-disable-next-line react/prop-types
+import PropTypes from "prop-types";
+
 const Filter = ({ id, label, counter, newBlock, active, onClick }) => {
   return (
     <>
@@ -14,6 +15,15 @@ const Filter = ({ id, label, counter, newBlock, active, onClick }) => {
       </span>
     </>
   );
+};
+
+Filter.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  label: PropTypes.string.isRequired,
+  counter: PropTypes.number,
+  newBlock: PropTypes.bool,
+  active: PropTypes.bool,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default Filter;
