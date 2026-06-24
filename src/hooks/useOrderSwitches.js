@@ -92,6 +92,7 @@ const useOrderSwitches = ({ orders, setFilters, removeShipment }) => {
       ).length,
     [switchStates]
   );
+  const clearAddressToFormat = useCallback(() => setAddressToFormat(null), []);
 
   return {
     switchStates,
@@ -99,7 +100,7 @@ const useOrderSwitches = ({ orders, setFilters, removeShipment }) => {
     shipSwitchCount,
     isAnySwitchChecked: shipSwitchCount > 0,
     addressToFormat,
-    clearAddressToFormat: () => setAddressToFormat(null),
+    clearAddressToFormat,
     handleSwitchChange,
   };
 };

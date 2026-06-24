@@ -63,4 +63,15 @@ describe("useOrderSwitches", () => {
 
     expect(result.current.switchStates).toEqual({ "ship-order-1": 0 });
   });
+
+  it("keeps the address cleanup callback stable across renders", () => {
+    const { result, rerender } = renderHook(() =>
+      useOrderSwitches({ orders, setFilters: vi.fn(), removeShipment: vi.fn() })
+    );
+    const clearAddress = result.current.clearAddressToFormat;
+
+    rerender();
+
+    expect(result.current.clearAddressToFormat).toBe(clearAddress);
+  });
 });
