@@ -60,10 +60,6 @@ export const exportToExcel = (
     const cleanFileName = fileName.replace(/\.xlsx$/i, "");
     XLSX.writeFile(workbook, `${cleanFileName}.xlsx`);
 
-    console.log(
-      `Excel exportado: ${cleanFileName}.xlsx con ${filteredOrdersData.length} registros`
-    );
-
     return true;
   } catch (error) {
     console.error("Error al exportar Excel:", error);
@@ -102,7 +98,6 @@ export const exportToExcelCustom = (data, columns, fileName) => {
     const cleanFileName = fileName.replace(/\.xlsx$/i, "");
     XLSX.writeFile(workbook, `${cleanFileName}.xlsx`);
 
-    console.log(`Excel exportado: ${cleanFileName}.xlsx`);
     return true;
   } catch (error) {
     console.error("Error al exportar Excel personalizado:", error);
