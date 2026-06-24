@@ -23,7 +23,7 @@ export const useApi = () => {
       return { success: true, data: response.data };
     } catch (err) {
       setLoading(false);
-      setError(err.response?.data?.detail || "Error en la petici贸n");
+      setError(err.response?.data?.detail || "Error en la petición");
       return { success: false, error: err };
     }
   }, []);
@@ -43,7 +43,7 @@ export const useApi = () => {
       return { success: true, data: response.data };
     } catch (err) {
       setLoading(false);
-      setError(err.response?.data?.detail || "Error en la petici贸n");
+      setError(err.response?.data?.detail || "Error en la petición");
       return { success: false, error: err };
     }
   }, []);
@@ -63,7 +63,7 @@ export const useApi = () => {
       return { success: true, data: response.data };
     } catch (err) {
       setLoading(false);
-      setError(err.response?.data?.detail || "Error en la petici贸n");
+      setError(err.response?.data?.detail || "Error en la petición");
       return { success: false, error: err };
     }
   }, []);
@@ -83,7 +83,7 @@ export const useApi = () => {
       return { success: true, data: response.data };
     } catch (err) {
       setLoading(false);
-      setError(err.response?.data?.detail || "Error en la petici贸n");
+      setError(err.response?.data?.detail || "Error en la petición");
       return { success: false, error: err };
     }
   }, []);

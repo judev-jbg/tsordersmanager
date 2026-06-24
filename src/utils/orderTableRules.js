@@ -10,6 +10,7 @@ const maximumLengths = {
   observaciones: 98,
   movil: 15,
   refC: 14,
+  num_pedido_ahora: 7,
 };
 
 export const validateOrderTableValue = (column, value) => {

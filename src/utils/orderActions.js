@@ -17,16 +17,19 @@ export const findOrderForAction = (orders, switchId, action) => {
 
   return (
     orders.find(
-      (order) => order.amazonOrderId === switchId.replace(prefix, "")
+      (order) => order.amazonOrderId === switchId.replace(prefix, ""),
     ) || null
   );
 };
 
-export const buildShipmentRequest = (order, formattedAddress, getCountryCode) => {
-  const recipient = order.recipientName?.replace(
-    `PO${order.purchaseOrderNumber || ""}`,
-    ""
-  ) || "";
+export const buildShipmentRequest = (
+  order,
+  formattedAddress,
+  getCountryCode,
+) => {
+  const recipient =
+    order.recipientName?.replace(`PO${order.purchaseOrderNumber || ""}`, "") ||
+    "";
   const phone =
     cleanPhoneNumber(order.shipPhoneNumber) ||
     cleanPhoneNumber(order.buyerPhoneNumber) ||
@@ -48,6 +51,7 @@ export const buildShipmentRequest = (order, formattedAddress, getCountryCode) =>
     bultos: 1,
     movil: phone,
     refC: order.purchaseOrderNumber || "",
+    num_pedido_ahora: order.num_order_ahora || null,
     idOrder: order.amazonOrderId || "",
     process: "isFile",
     value: 1,
